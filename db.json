@@ -1,0 +1,41 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "name": "Go to the gym",
+      "status": false,
+      "created_at": "29 Aug 2023"
+    },
+    {
+      "id": 2,
+      "name": "Walk the dog",
+      "status": false,
+      "created_at": "29 Aug 2023"
+    },
+    {
+      "id": 3,
+      "name": "Get some pizza",
+      "status": false,
+      "created_at": "29 Aug 2023"
+    },
+    {
+      "id": 4,
+      "name": "Finish this project",
+      "status": false,
+      "created_at": "29 Aug 2023"
+    },
+    {
+      "id": 5,
+      "name": "Finish this project",
+      "status": false,
+      "created_at": "29 Aug 2023"
+    }
+  ],
+
+  "statuses": [
+    "Back Log",
+    "Hold",
+    "In Progress",
+    "Completed"
+  ]
+}

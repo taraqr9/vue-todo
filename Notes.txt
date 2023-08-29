@@ -1,0 +1,1 @@
+1. Not auto after delete a todo.
