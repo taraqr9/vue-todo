@@ -1,1 +1,5 @@
-1. Not auto after delete a todo.
+1. Not auto refreshing after create and deleting a todo.
+2. Send dynamic data for update Todo
+
+// NOTE: Components
+1. Steps - https://daisyui.com/components/
