@@ -2,51 +2,90 @@
   "todos": [
     {
       "id": 1,
-      "name": "Go to the gym",
-      "status": false,
+      "name": "Go to the gym update one",
+      "status": "Hold",
+      "priority": "Low",
       "created_at": "29 Aug 2023"
     },
     {
       "id": 2,
       "name": "Walk the dog",
-      "status": false,
+      "status": "Back Log",
+      "priority": "Medium",
       "created_at": "29 Aug 2023"
     },
     {
-      "id": 3,
-      "name": "Get some pizza",
-      "status": false,
-      "created_at": "29 Aug 2023"
+      "name": "Laudantium aut aut ",
+      "status": "Completed",
+      "created_at": "8/30/2023, 4:07:22 PM",
+      "id": 10
     },
     {
-      "id": 4,
-      "name": "Finish this project",
-      "status": false,
-      "created_at": "29 Aug 2023"
+      "name": "SOS Children’s Villages, War Child Holland and Save the Children have joined forces to support refugee children to cope adequately with difficulties, to deal with their emotions and to socialize with other kids, in order to prevent mental health problems.",
+      "status": "Hold",
+      "created_at": "8/30/2023, 5:31:22 PM",
+      "priority": "High",
+      "id": 12
     },
     {
-      "id": 5,
-      "name": "Finish this project",
-      "status": false,
-      "created_at": "29 Aug 2023"
+      "name": "Asperiores blanditii",
+      "status": "Back Log",
+      "created_at": "8/30/2023, 6:26:51 PM",
+      "priority": "High",
+      "id": 13
+    },
+    {
+      "name": "Neque porro ut liber",
+      "status": "Completed",
+      "created_at": "",
+      "priority": "Medium",
+      "id": 14
+    },
+    {
+      "name": "Fugiat amet qu",
+      "status": "Back Log",
+      "created_at": "",
+      "priority": "High",
+      "id": 15
+    },
+    {
+      "name": "todo 1",
+      "status": "Back Log",
+      "created_at": "8/30/2023, 6:28:19 PM",
+      "priority": "High",
+      "id": 16
     }
   ],
   "statuses": [
     {
       "id": 1,
-      "status": "Back Log"
+      "name": "Back Log"
     },
     {
       "id": 2,
-      "status": "Hold"
+      "name": "Hold"
     },
     {
       "id": 3,
-      "status": "In Progress"
+      "name": "In Progress"
     },
     {
       "id": 4,
-      "status": "Completed"
+      "name": "Completed"
+    }
+  ],
+  "priority": [
+    {
+      "id": 1,
+      "name": "Low"
+    },
+    {
+      "id": 2,
+      "name": "Medium"
+    },
+    {
+      "id": 3,
+      "name": "High"
     }
   ]
 }
