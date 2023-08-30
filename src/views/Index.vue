@@ -31,6 +31,7 @@ onMounted(() => {
 
 
 <template>
+  <title>Todo</title>
   <div class="grid md:grid-cols-12 rounded">
     <div class="md:col-span-2 bg-teal-50 px-3">
       <h3 class="mb-4 font-semibold text-gray-900 dark:text-white">

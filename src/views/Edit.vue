@@ -50,6 +50,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <title>Update Todo</title>
   <div class="grid md:grid-cols-12 rounded">
     <div class="md:col-span-2 bg-teal-50 px-3"></div>
 
