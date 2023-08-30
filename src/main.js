@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import './style.css'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
-import IndexOne from './views/Indexone.vue'
+import Index from './views/Index.vue'
 import TodoCreate from './views/Create.vue'
 import TodoView from './views/View.vue'
 import TodoEdit from './views/Edit.vue'
@@ -17,8 +17,8 @@ const router = createRouter({
         },
         {
             path: '/',
-            name: 'indexone',
-            component: IndexOne
+            name: 'index',
+            component: Index
         },
         {
             path: '/todo/:id',
