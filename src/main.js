@@ -6,7 +6,7 @@ import Index from './views/Index.vue'
 import TodoCreate from './views/Create.vue'
 import TodoView from './views/View.vue'
 import TodoEdit from './views/Edit.vue'
-import About from './views/About.vue'
+import About from './About.vue'
 
 const router = createRouter({
     history: createWebHistory(),
