@@ -1,9 +1,11 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
+import {createToaster} from "@meforma/vue-toaster";
 
 const baseUrl = "http://localhost:3001";
-const statuses = reactive({});
-const priorities = reactive({});
+const statuses = reactive([]);
+const priorities = reactive([]);
+const toast = createToaster({ /* options */ });
 
 const todo = ref({
   name: "",
@@ -23,7 +25,7 @@ async function create() {
   });
   console.log(todo.value.name);
 
-  alert("Todo created successfully!");
+  toast.success("Todo created successfully!");
 
   todo.value.name = "";
   todo.value.status = "";
@@ -49,11 +51,11 @@ onMounted(() => {
 
 <template>
   <title>Create Todo</title>
-  <div class="grid md:grid-cols-12 rounded">
+  <div class="grid md:grid-cols-12 rounded h-screen">
     <div class="md:col-span-2 bg-teal-50 px-3"></div>
 
-    <main class="px-16 py-6 md:col-span-10 bg-gray-100">
-      <div class="navbar bg-base-100">
+    <main class="px-16 py-6 md:col-span-10 bg-gray-100 h-full">
+      <div class="navbar bg-base-100 rounded-2xl">
         <div class="flex-1">
           <a href="/" class="btn btn-ghost normal-case text-xl">Todo</a>
         </div>
@@ -67,16 +69,11 @@ onMounted(() => {
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mx-auto">
           <form class="p-3" @submit.prevent="create">
             <div class="mb-6">
-              <label
-                for="name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Name</label
-              >
               <input
                 v-model="todo.name"
                 type="text"
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                placeholder="Enter your todo here"
+                placeholder="Enter your todo name here"
                 required
               />
             </div>

@@ -7,6 +7,7 @@ import TodoCreate from './views/Create.vue'
 import TodoView from './views/View.vue'
 import TodoEdit from './views/Edit.vue'
 import About from './About.vue'
+import Toaster from "@meforma/vue-toaster";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -40,5 +41,6 @@ const router = createRouter({
 })
 
 createApp(App)
-.use(router)
-.mount('#app')
+    .use(router)
+    .use(Toaster)
+    .mount('#app')

@@ -1,6 +1,7 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
+import {createToaster} from "@meforma/vue-toaster";
 
 const baseUrl = "http://localhost:3001";
 const route = useRoute();
@@ -8,6 +9,7 @@ const id = route.params.id;
 const todo = reactive({});
 const statuses = reactive({});
 const priorities = reactive({});
+const toast = createToaster({ /* options */ });
 
 async function getTodoDetails() {
   try {
@@ -29,18 +31,22 @@ async function getAllPriorities() {
 }
 
 async function update() {
-  todo.updated_at = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
-  console.log(todo);
-  await fetch(`${baseUrl}/todos/${todo.id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(todo),
-  });
+  try{
+    todo.updated_at = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
+    console.log(todo);
+    await fetch(`${baseUrl}/todos/${todo.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(todo),
+    });
 
-  alert("Todo updated successfully!");
-  await getTodoDetails();
+    toast.success("Todo updated successfully!")
+    await getTodoDetails();
+  }catch (error) {
+    toast.error(error);
+  }
 }
 
 onMounted(() => {
@@ -52,11 +58,11 @@ onMounted(() => {
 
 <template>
   <title>Update Todo</title>
-  <div class="grid md:grid-cols-12 rounded">
+  <div class="grid md:grid-cols-12 rounded h-screen">
     <div class="md:col-span-2 bg-teal-50 px-3"></div>
 
     <main class="px-16 py-6 md:col-span-10 bg-gray-100">
-      <div class="navbar bg-base-100">
+      <div class="navbar bg-base-100 rounded-2xl">
         <div class="flex-1">
           <a href="/" class="btn btn-ghost normal-case text-xl">Todo</a>
         </div>

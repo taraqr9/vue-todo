@@ -1,11 +1,15 @@
 <script setup>
 import { useRoute } from "vue-router";
 import { reactive, onMounted } from "vue";
+import { createToaster } from "@meforma/vue-toaster";
 
 const baseUrl = "http://localhost:3001";
 const route = useRoute();
 const id = route.params.id;
 const todo = reactive({});
+const toast = createToaster({
+  /* options */
+});
 
 async function getTodoDetails() {
   try {
@@ -16,6 +20,26 @@ async function getTodoDetails() {
   }
 }
 
+async function updateStatus(){
+  try {
+    todo.updated_at = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Dhaka",
+    });
+    todo.status = 'Completed';
+    await fetch(`${baseUrl}/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(todo),
+    });
+    console.log("hello");
+    toast.success("Status updated successfully");
+  } catch (error) {
+    toast.error("The error is: " + error);
+  }
+}
+
 onMounted(() => {
   getTodoDetails();
 });
@@ -23,11 +47,11 @@ onMounted(() => {
 
 <template>
   <title>Todo Details</title>
-  <div class="grid md:grid-cols-12 rounded">
-    <div class="md:col-span-2 bg-teal-50 px-3"></div>
+  <div class="grid md:grid-cols-12 rounded h-screen">
+    <div class="md:col-span-2 bg-teal-50 px-3 h-full"></div>
 
     <main class="px-16 py-6 md:col-span-10 bg-gray-100">
-      <div class="navbar bg-base-100">
+      <div class="navbar bg-base-100 rounded-2xl">
         <div class="flex-1">
           <a href="/" class="btn btn-ghost normal-case text-xl">Todo</a>
         </div>
@@ -91,6 +115,10 @@ onMounted(() => {
             >
               <div class="flex-none gap-2">
                 <a :href="'/todo/'+todo.id+'/edit'" class="btn btn-primary text-white">Edit</a>
+              </div>
+
+              <div class="flex-none gap-2">
+                <a @click="updateStatus()" class="btn btn-success text-white">Mark as complete</a>
               </div>
             </div>
           </div>
