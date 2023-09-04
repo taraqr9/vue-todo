@@ -12,7 +12,6 @@ const filterStatus = ref([]);
 const priority = ref("");
 const pagination = ref("5");
 const sort = ref("");
-const todo = reactive({});
 const toast = createToaster({
   /* options */
 });
@@ -46,15 +45,6 @@ async function destroy(id) {
     toast.success('Task Deleted successfully!');
   }
 }
-
-const paginatedTodos = computed(() => {
-  if (pagination.value === "all") {
-    return filteredTodos.value; // Show all todos
-  } else {
-    const numToShow = parseInt(pagination.value, 10);
-    return filteredTodos.value.slice(0, numToShow); // Show limited number of todos
-  }
-});
 
 const filteredTodos = computed(() => {
   let filteredList = todos;
@@ -92,8 +82,15 @@ const filteredTodos = computed(() => {
     );
   }
 
-  return filteredList;
+  if (pagination.value === "all") {
+    return filteredList; // Show all todos
+  } else {
+    const numToShow = parseInt(pagination.value, 10);
+    return filteredList.slice(0, numToShow); // Show limited number of todos
+  }
+
 });
+
 
 async function handleStatusSelection(todo, status) {
   try {
@@ -101,6 +98,7 @@ async function handleStatusSelection(todo, status) {
       timeZone: "Asia/Dhaka",
     });
     todo.status = status.name;
+
     await fetch(`${baseUrl}/todos/${todo.id}`, {
       method: "PUT",
       headers: {
@@ -108,7 +106,6 @@ async function handleStatusSelection(todo, status) {
       },
       body: JSON.stringify(todo),
     });
-    console.log("hello");
     toast.success("Status updated successfully");
   } catch (error) {
     toast.error("The error is: " + error);
@@ -232,7 +229,7 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr
-                v-for="todo in paginatedTodos"
+                v-for="todo in filteredTodos"
                 :key="todo.id"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >

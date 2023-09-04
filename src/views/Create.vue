@@ -7,16 +7,20 @@ const statuses = reactive([]);
 const priorities = reactive([]);
 const toast = createToaster({ /* options */ });
 
+
 const todo = ref({
   name: "",
   status: "",
   priority: "",
-  created_at: new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }),
-  updated_at: new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }),
+  created_at: "",
+  updated_at: "",
 });
 
 async function create() {
-  console.log(todo.value.status);
+  const currentDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
+  todo.value.created_at = currentDateTime;
+  todo.value.updated_at = currentDateTime;
+
   await fetch(`${baseUrl}/todos`, {
     method: "POST",
     headers: {
@@ -24,7 +28,6 @@ async function create() {
     },
     body: JSON.stringify(todo.value),
   });
-  console.log(todo.value.name);
 
   toast.success("Todo created successfully!");
 

@@ -33,7 +33,7 @@ async function getAllPriorities() {
 async function update() {
   try{
     todo.updated_at = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
-    console.log(todo);
+
     await fetch(`${baseUrl}/todos/${todo.id}`, {
       method: "PUT",
       headers: {

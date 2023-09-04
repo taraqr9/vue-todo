@@ -33,7 +33,7 @@ async function updateStatus(){
       },
       body: JSON.stringify(todo),
     });
-    console.log("hello");
+
     toast.success("Status updated successfully");
   } catch (error) {
     toast.error("The error is: " + error);
