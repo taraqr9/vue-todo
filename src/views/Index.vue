@@ -18,7 +18,14 @@ const toast = createToaster({
 });
 async function getTodos() {
   const res = await fetch(`${baseUrl}/todos`);
-  Object.assign(todos, await res.json());
+  const data = await res.json();
+
+  // Assuming 'created_at' is a date field, you can sort the data by 'created_at' in descending order
+  data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  // Assign the sorted data to your 'todos' variable
+  todos.length = 0; // Clear the existing 'todos' array
+  todos.push(...data); // Push the sorted data into 'todos'
 }
 
 async function getAllPriorities() {
@@ -34,7 +41,7 @@ async function getAllStatus() {
 async function destroy(id) {
   if (window.confirm("You want to delete the todo?")) {
     await axios.delete(`${baseUrl}/todos/` + id);
-
+    todos.length=0;
     await getTodos();
     toast.success('Task Deleted successfully!');
   }
@@ -42,7 +49,6 @@ async function destroy(id) {
 
 const paginatedTodos = computed(() => {
   if (pagination.value === "all") {
-    getTodos();
     return filteredTodos.value; // Show all todos
   } else {
     const numToShow = parseInt(pagination.value, 10);
@@ -73,7 +79,6 @@ const filteredTodos = computed(() => {
     filteredList = filteredList.filter((todo) =>
       filterStatus.value.includes(todo.status)
     );
-    console.log(filteredList);
   }
 
   // Apply sorting
@@ -86,8 +91,6 @@ const filteredTodos = computed(() => {
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
   }
-
-  getTodos();
 
   return filteredList;
 });
@@ -112,10 +115,6 @@ async function handleStatusSelection(todo, status) {
   }
 }
 
-async function getTotalTodo(){
-  getTodos().length();
-}
-
 onMounted(() => {
   getTodos();
   getAllStatus();
@@ -129,11 +128,11 @@ onMounted(() => {
   <div class="md:col-span-2 px-3 bg-gray-100 h-screen">
     <div class="grid md:grid-cols-12 rounded h-full">
       <div
-        class="md:col-span-2 bg-teal-50 px-3 flex items-center justify-center"
+        class="md:col-span-2 bg-teal-50"
       >
-        <div class="grid">
+        <div class="grid mt-20 items-start justify-center">
           <div class="badge badge-success p-4 mb-4">
-            <h1 class="text-xl">Filter Status</h1>
+            <p class="text-xl">Filter Status</p>
           </div>
 
           <div

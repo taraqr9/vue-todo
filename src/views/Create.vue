@@ -10,6 +10,7 @@ const toast = createToaster({ /* options */ });
 const todo = ref({
   name: "",
   status: "",
+  priority: "",
   created_at: new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }),
   updated_at: new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" }),
 });
