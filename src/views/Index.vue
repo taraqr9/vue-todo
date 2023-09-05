@@ -10,21 +10,47 @@ const priorities = reactive([]);
 const search = ref("");
 const filterStatus = ref([]);
 const priority = ref("");
-const pagination = ref("5");
+const showNextPageButton = ref(true);
+const showPreviousPageButton = ref(false);
+const page = ref("1");
+const listLimit = ref("10");
 const sort = ref("");
 const toast = createToaster({
   /* options */
 });
 async function getTodos() {
-  const res = await fetch(`${baseUrl}/todos`);
+  const res = await fetch(`${baseUrl}/todos?order=desc&_page=${page.value}&_limit=${listLimit.value}`);
   const data = await res.json();
 
-  // Assuming 'created_at' is a date field, you can sort the data by 'created_at' in descending order
-  data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  // Math.ceil(totalItems / itemsPerPage)     // total page
 
   // Assign the sorted data to your 'todos' variable
   todos.length = 0; // Clear the existing 'todos' array
   todos.push(...data); // Push the sorted data into 'todos'
+
+  if(todos.length !== 10){
+    showNextPageButton.value = false;
+  }else{
+    showNextPageButton.value = true;
+  }
+
+  if(page.value>1){
+    showPreviousPageButton.value = true;
+  }else{
+    showPreviousPageButton.value = false;
+  }
+
+  console.log(page.value);
+}
+
+function nextPage(){
+  page.value++;
+  getTodos();
+}
+
+function previousPage(){
+  page.value--;
+  getTodos();
 }
 
 async function getAllPriorities() {
@@ -56,8 +82,7 @@ const filteredTodos = computed(() => {
           return 0;
         }
         return sort.value === "created-at-asc" ? new Date(a.created_at) - new Date(b.created_at) : new Date(b.created_at) - new Date(a.created_at);
-      })
-      .slice(0, pagination.value === "all" ? undefined : parseInt(pagination.value, 10));
+      });
 });
 
 
@@ -158,17 +183,6 @@ onMounted(() => {
             </div>
 
             <div class="form-control">
-              <select
-                v-model="pagination"
-                class="select select-bordered w-full max-w-xs"
-              >
-                <option value="5" selected>5</option>
-                <option value="10">10</option>
-                <option value="all">All</option>
-              </select>
-            </div>
-
-            <div class="form-control">
               <input
                 v-model="search"
                 type="text"
@@ -263,6 +277,60 @@ onMounted(() => {
             </tbody>
           </table>
         </div>
+
+        <ul class="flex items-center -space-x-px h-8 text-sm">
+          <!-- Previous Page Button -->
+          <li @click="previousPage" v-show="showPreviousPageButton">
+            <a
+                href="#"
+                class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <span class="sr-only">Previous</span>
+              <svg
+                  class="w-2.5 h-2.5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+              >
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+              </svg>
+            </a>
+          </li>
+
+          <!-- Generate Dynamic Page Numbers -->
+          <!--          <li v-for="pageNumber in totalPages" :key="pageNumber">-->
+          <!--            <a-->
+          <!--                href="#"-->
+          <!--                class="flex items-center justify-center px-3 h-8 leading-tight"-->
+          <!--                :class="{-->
+          <!--          'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': pageNumber === currentPage,-->
+          <!--          'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': pageNumber !== currentPage-->
+          <!--        }"-->
+          <!--            >-->
+          <!--              {{ pageNumber }}-->
+          <!--            </a>-->
+          <!--          </li>-->
+
+          <!-- Next Page Button -->
+          <li @click="nextPage" v-show="showNextPageButton">
+            <a
+                href="#"
+                class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <span class="sr-only">Next</span>
+              <svg
+                  class="w-2.5 h-2.5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+              >
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
       </main>
     </div>
   </div>
