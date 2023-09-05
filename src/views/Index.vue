@@ -47,48 +47,17 @@ async function destroy(id) {
 }
 
 const filteredTodos = computed(() => {
-  let filteredList = todos;
-
-  // Filter by search term
-  if (search.value) {
-    const searchTerm = search.value.toLowerCase();
-    filteredList = filteredList.filter((todo) =>
-      todo.name.toLowerCase().includes(searchTerm)
-    );
-  }
-
-  // Filter by priority
-  if (priority.value && priority.value !== "Select priority") {
-    filteredList = filteredList.filter(
-      (todo) => todo.priority === priority.value
-    );
-  }
-
-  // Filter by checkbox status
-  if (filterStatus.value.length > 0) {
-    filteredList = filteredList.filter((todo) =>
-      filterStatus.value.includes(todo.status)
-    );
-  }
-
-  // Apply sorting
-  if (sort.value === "created-at-asc") {
-    filteredList.sort(
-      (a, b) => new Date(a.created_at) - new Date(b.created_at)
-    );
-  } else if (sort.value === "created-at-desc") {
-    filteredList.sort(
-      (a, b) => new Date(b.created_at) - new Date(a.created_at)
-    );
-  }
-
-  if (pagination.value === "all") {
-    return filteredList; // Show all todos
-  } else {
-    const numToShow = parseInt(pagination.value, 10);
-    return filteredList.slice(0, numToShow); // Show limited number of todos
-  }
-
+  return todos
+      .filter((todo) => !search.value || todo.name.toLowerCase().includes(search.value.toLowerCase()))
+      .filter((todo) => !priority.value || priority.value === "Select priority" || todo.priority === priority.value)
+      .filter((todo) => filterStatus.value.length === 0 || filterStatus.value.includes(todo.status))
+      .sort((a, b) => {
+        if (sort.value === "Sort By") {
+          return 0;
+        }
+        return sort.value === "created-at-asc" ? new Date(a.created_at) - new Date(b.created_at) : new Date(b.created_at) - new Date(a.created_at);
+      })
+      .slice(0, pagination.value === "all" ? undefined : parseInt(pagination.value, 10));
 });
 
 
@@ -182,7 +151,7 @@ onMounted(() => {
                 v-model="sort"
                 class="select select-bordered w-full max-w-xs"
               >
-                <option value="" disabled selected>Sort By</option>
+                <option value="" selected>Sort By</option>
                 <option value="created-at-asc">Created At (ASC)</option>
                 <option value="created-at-desc">Created At (DESC)</option>
               </select>
