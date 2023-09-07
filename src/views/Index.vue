@@ -5,51 +5,51 @@ import { createToaster } from "@meforma/vue-toaster";
 
 const baseUrl = "http://localhost:3001";
 const todos = reactive([]);
+const totalTodo = ref(0);
 const statuses = reactive([]);
 const priorities = reactive([]);
-const search = ref("");
-const filterStatus = ref([]);
 const priority = ref("");
+const filterStatus = ref([]);
+
+const search = ref("");
+const sort = ref("");
+
 const showNextPageButton = ref(true);
 const showPreviousPageButton = ref(false);
-const page = ref("1");
-const listLimit = ref("10");
-const sort = ref("");
+const pageNumber = ref("1");
+const totalPage = ref("0");
+const itemsPerPage = ref("10");
+
 const toast = createToaster({
   /* options */
 });
 async function getTodos() {
-  const res = await fetch(`${baseUrl}/todos?order=desc&_page=${page.value}&_limit=${listLimit.value}`);
-  const data = await res.json();
+  const res = await fetch(`${baseUrl}/todos?order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
+  totalTodo.value = (await (await fetch(`${baseUrl}/meta`)).json()).total_todo;
 
-  // Math.ceil(totalItems / itemsPerPage)     // total page
+  totalPage.value = Math.ceil(totalTodo.value / itemsPerPage.value);     // total page
 
   // Assign the sorted data to your 'todos' variable
   todos.length = 0; // Clear the existing 'todos' array
-  todos.push(...data); // Push the sorted data into 'todos'
+  todos.push(...await res.json()); // Push the sorted data into 'todos'
 
-  if(todos.length !== 10){
-    showNextPageButton.value = false;
-  }else{
-    showNextPageButton.value = true;
-  }
+  showNextPageButton.value = todos.length === 10;
 
-  if(page.value>1){
-    showPreviousPageButton.value = true;
-  }else{
-    showPreviousPageButton.value = false;
-  }
-
-  console.log(page.value);
+  showPreviousPageButton.value = pageNumber.value > 1;
 }
 
 function nextPage(){
-  page.value++;
+  pageNumber.value++;
   getTodos();
 }
 
 function previousPage(){
-  page.value--;
+  pageNumber.value--;
+  getTodos();
+}
+
+function updatePageNumber(updatePageNumber){
+  pageNumber.value = updatePageNumber;
   getTodos();
 }
 
@@ -155,7 +155,7 @@ onMounted(() => {
           </div>
 
           <div class="flex-1 border-accent/25 rounded">
-            <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ todos.length }}</a>
+            <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ totalTodo }}</a>
           </div>
 
           <div class="flex-none gap-2">
@@ -278,59 +278,59 @@ onMounted(() => {
           </table>
         </div>
 
-        <ul class="flex items-center -space-x-px h-8 text-sm">
-          <!-- Previous Page Button -->
-          <li @click="previousPage" v-show="showPreviousPageButton">
-            <a
-                href="#"
-                class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              <span class="sr-only">Previous</span>
-              <svg
-                  class="w-2.5 h-2.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
+        <div>
+          <ul class="flex items-center -space-x-px h-8 text-sm">
+            <!-- Previous Page Button -->
+            <li @click="previousPage" v-show="showPreviousPageButton">
+              <a
+                  href="#"
+                  class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
               >
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
-              </svg>
-            </a>
-          </li>
-
-          <!-- Generate Dynamic Page Numbers -->
-          <!--          <li v-for="pageNumber in totalPages" :key="pageNumber">-->
-          <!--            <a-->
-          <!--                href="#"-->
-          <!--                class="flex items-center justify-center px-3 h-8 leading-tight"-->
-          <!--                :class="{-->
-          <!--          'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': pageNumber === currentPage,-->
-          <!--          'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': pageNumber !== currentPage-->
-          <!--        }"-->
-          <!--            >-->
-          <!--              {{ pageNumber }}-->
-          <!--            </a>-->
-          <!--          </li>-->
-
-          <!-- Next Page Button -->
-          <li @click="nextPage" v-show="showNextPageButton">
-            <a
-                href="#"
-                class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-            >
-              <span class="sr-only">Next</span>
-              <svg
-                  class="w-2.5 h-2.5"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 6 10"
+                <span class="sr-only">Previous</span>
+                <svg
+                    class="w-2.5 h-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 6 10"
+                >
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                </svg>
+              </a>
+            </li>
+            <li v-for="(pageNum, index) in totalPage" :key="pageNumber" @click="updatePageNumber(pageNum)">
+              <a
+                  href="#"
+                  class="flex items-center justify-center px-3 h-8 leading-tight" v-if="pageNum === index+1 ? 'btn-active' : '' "
+                  :class="{
+                    'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': pageNumber === currentPage,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': pageNumber !== currentPage
+                  }"
               >
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-              </svg>
-            </a>
-          </li>
-        </ul>
+                {{ pageNum }}
+              </a>
+            </li>
+
+            <!-- Next Page Button -->
+            <li @click="nextPage" v-show="showNextPageButton">
+              <a
+                  href="#"
+                  class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >
+                <span class="sr-only">Next</span>
+                <svg
+                    class="w-2.5 h-2.5"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 6 10"
+                >
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
       </main>
     </div>
   </div>
