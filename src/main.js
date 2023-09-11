@@ -8,6 +8,7 @@ import TodoView from './views/View.vue'
 import TodoEdit from './views/Edit.vue'
 import About from './About.vue'
 import Toaster from "@meforma/vue-toaster";
+import Login from "./views/auth/login.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -35,8 +36,24 @@ const router = createRouter({
         {
             path: '/about',
             name: 'about',
-            component: About
-        }
+            component: About,
+            beforeEnter: (to, from, next) => {
+                const log = false;
+
+                if(!log){
+                    return next({
+                        name: 'login'
+                    })
+                }
+                console.log("middleware");
+                next();
+            }
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: Login
+        },
     ]
 })
 
