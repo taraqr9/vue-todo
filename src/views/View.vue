@@ -53,15 +53,15 @@ onMounted(() => {
     <main class="px-16 py-6 md:col-span-10 bg-gray-100">
       <div class="navbar bg-base-100 rounded-2xl">
         <div class="flex-1">
-          <a href="/" class="btn btn-ghost normal-case text-xl">Todo</a>
+          <RouterLink to="/" class="btn btn-ghost normal-case text-xl">Todo</RouterLink>
         </div>
 
         <div class="flex-none gap-2 mr-3">
-          <a href="/" class="btn btn-success text-white">Home</a>
+          <RouterLink to="/" class="btn btn-success text-white">Home</RouterLink>
         </div>
 
         <div class="flex-none gap-2">
-          <a href="/todo/create" class="btn btn-success text-white">Create</a>
+          <RouterLink to="/todo/create" class="btn btn-success text-white">Create</RouterLink>
         </div>
       </div>
 
@@ -114,7 +114,7 @@ onMounted(() => {
               class="card-actions flex justify-end absolute bottom-0 right-0 p-4"
             >
               <div class="flex-none gap-2">
-                <a :href="'/todo/'+todo.id+'/edit'" class="btn btn-primary text-white">Edit</a>
+                <RouterLink :to="'/todo/'+todo.id+'/edit'" class="btn btn-primary text-white">Edit</RouterLink>
               </div>
 
               <div class="flex-none gap-2">

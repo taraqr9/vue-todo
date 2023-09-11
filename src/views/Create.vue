@@ -61,11 +61,11 @@ onMounted(() => {
     <main class="px-16 py-6 md:col-span-10 bg-gray-100 h-full">
       <div class="navbar bg-base-100 rounded-2xl">
         <div class="flex-1">
-          <a href="/" class="btn btn-ghost normal-case text-xl">Todo</a>
+          <RouterLink to="/" class="btn btn-ghost normal-case text-xl">Todo</RouterLink>
         </div>
 
         <div class="flex-none gap-2">
-          <a href="/" class="btn btn-success text-white">Home</a>
+          <RouterLink to="/" class="btn btn-success text-white">Home</RouterLink>
         </div>
       </div>
 

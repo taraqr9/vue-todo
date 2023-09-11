@@ -2,6 +2,9 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
+import {useCounterStore} from "../js/user.js";
+
+const storeCounter = useCounterStore();
 
 const baseUrl = "http://localhost:3001";
 const todos = reactive([]);
@@ -125,6 +128,12 @@ onMounted(() => {
           <div class="badge badge-success p-4 mb-4">
             <p class="text-xl">Filter Status</p>
           </div>
+          This is counter : {{ storeCounter.user.name}} <br>
+          <button class="btn btn-outline" @click="storeCounter.$patch({ count: 24 })">
+            Click Me
+          </button>
+
+          <RouterLink to="/about">About</RouterLink>
 
           <div
             class="flex items-center mb-4"
@@ -191,7 +200,7 @@ onMounted(() => {
               />
             </div>
 
-            <a href="/todo/create" class="btn btn-success text-white">Create</a>
+            <RouterLink to="/todo/create" class="btn btn-success text-white" >Create</RouterLink>
           </div>
         </div>
 
@@ -233,13 +242,13 @@ onMounted(() => {
                 </td>
                 <td class="px-6 py-4">{{ todo.created_at }}</td>
                 <td class="px-6 py-4">
-                  <a
-                    :href="'/todo/' + todo.id"
+                  <RouterLink
+                    :to="'/todo/' + todo.id"
                     type="button"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
                   >
                     View
-                  </a>
+                  </RouterLink>
 
                   <div
                     class="dropdown text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
@@ -257,13 +266,13 @@ onMounted(() => {
                     </ul>
                   </div>
 
-                  <a
-                    :href="'/todo/' + todo.id + '/edit'"
+                  <RouterLink
+                    :to="'/todo/' + todo.id + '/edit'"
                     type="button"
                     class="text-white bg-yellow-500 hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-yellow-600 dark:hover:bg-yellow-500 dark:focus:ring-yellow-900"
                   >
                     Edit
-                  </a>
+                  </RouterLink>
 
                   <button
                     @click="destroy(todo.id)"

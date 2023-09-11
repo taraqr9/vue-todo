@@ -1,4 +1,16 @@
 {
+  "users": [
+    {
+      "id": 1,
+      "name": "Donal Trump",
+      "status": "Active",
+      "auth": false,
+      "password": "123456",
+      "email": "jatri@gmail.com",
+      "created_at": "9/5/2023, 11:25:45 AM",
+      "updated_at": "9/4/2023, 11:26:50 AM"
+    }
+  ],
   "todos": [
     {
       "name": "Dolores aut illum c",
@@ -50,10 +62,10 @@
     },
     {
       "name": "Distinctio Fugit f",
-      "status": "Hold",
+      "status": "Completed",
       "priority": "Medium",
       "created_at": "9/11/2023, 11:14:02 AM",
-      "updated_at": "9/4/2023, 11:14:02 AM",
+      "updated_at": "9/11/2023, 2:31:47 PM",
       "id": 33
     },
     {
@@ -74,10 +86,10 @@
     },
     {
       "name": "Excepteur sint volup",
-      "status": "Back Log",
-      "priority": "High",
+      "status": "Completed",
+      "priority": "Low",
       "created_at": "9/14/2023, 12:37:50 PM",
-      "updated_at": "9/4/2023, 4:33:45 PM",
+      "updated_at": "9/11/2023, 2:40:00 PM",
       "id": 36
     },
     {
@@ -271,13 +283,35 @@
       "created_at": "9/4/2023, 3:16:14 PM",
       "updated_at": "9/4/2023, 3:16:14 PM",
       "id": 72
+    },
+    {
+      "name": "Eum sed elit quia d",
+      "status": "In Progress",
+      "priority": "Medium",
+      "created_at": "9/11/2023, 2:41:07 PM",
+      "updated_at": "9/11/2023, 2:41:07 PM",
+      "id": 73
+    },
+    {
+      "name": "Labore est cumque m",
+      "status": "Back Log",
+      "priority": "Low",
+      "created_at": "9/11/2023, 2:41:16 PM",
+      "updated_at": "9/11/2023, 2:41:16 PM",
+      "id": 74
+    },
+    {
+      "name": "one moreeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "status": "Completed",
+      "priority": "High",
+      "created_at": "9/11/2023, 2:41:53 PM",
+      "updated_at": "9/11/2023, 2:41:53 PM",
+      "id": 75
     }
   ],
-
   "meta": {
     "total_todo": 34
   },
-
   "statuses": [
     {
       "id": 1,
