@@ -7,6 +7,9 @@ const statuses = reactive([]);
 const priorities = reactive([]);
 const toast = createToaster({ /* options */ });
 
+import {useUserStore} from "../js/user.js";
+
+const stateUser = useUserStore();
 
 const todo = ref({
   name: "",
@@ -48,6 +51,7 @@ async function getAllPriorities() {
 }
 
 onMounted(() => {
+  stateUser.stateUpdate()
   getAllStatus();
   getAllPriorities();
 });

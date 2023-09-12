@@ -2,9 +2,9 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
-import {useCounterStore} from "../js/user.js";
+import {useUserStore} from "../js/user.js";
 
-const storeCounter = useCounterStore();
+const stateUser = useUserStore();
 
 const baseUrl = "http://localhost:3001";
 const todos = reactive([]);
@@ -39,6 +39,7 @@ async function getTodos() {
   showNextPageButton.value = todos.length === 10;
 
   showPreviousPageButton.value = pageNumber.value > 1;
+  console.log("name ", stateUser.user.name);
 }
 
 function nextPage(){
@@ -110,6 +111,7 @@ async function handleStatusSelection(todo, status) {
 }
 
 onMounted(() => {
+  stateUser.stateUpdate();
   getTodos();
   getAllStatus();
   getAllPriorities();
@@ -128,12 +130,6 @@ onMounted(() => {
           <div class="badge badge-success p-4 mb-4">
             <p class="text-xl">Filter Status</p>
           </div>
-          This is counter : {{ storeCounter.user.name}} <br>
-          <button class="btn btn-outline" @click="storeCounter.$patch({ count: 24 })">
-            Click Me
-          </button>
-
-          <RouterLink to="/about">About</RouterLink>
 
           <div
             class="flex items-center mb-4"
@@ -201,6 +197,25 @@ onMounted(() => {
             </div>
 
             <RouterLink to="/todo/create" class="btn btn-success text-white" >Create</RouterLink>
+
+            <div class="dropdown dropdown-end">
+              <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                <div class="w-10 rounded-full">
+                  <img src="../assets/vue.svg" />
+                </div>
+              </label>
+              <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                <li>{{ stateUser.user.name }}</li>
+                <li>
+                  <a class="justify-between">
+                    Profile
+                    <span class="badge">New</span>
+                  </a>
+                </li>
+                <li><a>Settings</a></li>
+                <li><a @click="stateUser.logout">Logout</a></li>
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -307,13 +322,13 @@ onMounted(() => {
                 </svg>
               </a>
             </li>
-            <li v-for="(pageNum, index) in totalPage" :key="pageNumber" @click="updatePageNumber(pageNum)">
+            <li v-for="(pageNum, index) in totalPage" :key="index" @click="updatePageNumber(pageNum)">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 leading-tight" v-if="pageNum === index+1 ? 'btn-active' : '' "
                   :class="{
-                    'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': pageNumber === currentPage,
-                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': pageNumber !== currentPage
+                    'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': pageNumber === pageNum,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': pageNumber !== pageNum
                   }"
               >
                 {{ pageNum }}

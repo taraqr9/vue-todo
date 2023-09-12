@@ -10,6 +10,9 @@ const todo = reactive({});
 const toast = createToaster({
   /* options */
 });
+import {useUserStore} from "../js/user.js";
+
+const stateUser = useUserStore();
 
 async function getTodoDetails() {
   try {
@@ -41,6 +44,7 @@ async function updateStatus(){
 }
 
 onMounted(() => {
+  stateUser.stateUpdate()
   getTodoDetails();
 });
 </script>

@@ -2,6 +2,9 @@
 import { reactive, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import {createToaster} from "@meforma/vue-toaster";
+import {useUserStore} from "../js/user.js";
+
+const stateUser = useUserStore();
 
 const baseUrl = "http://localhost:3001";
 const route = useRoute();
@@ -50,6 +53,7 @@ async function update() {
 }
 
 onMounted(() => {
+  stateUser.stateUpdate()
   getTodoDetails();
   getAllStatus();
   getAllPriorities();

@@ -1,10 +1,7 @@
 <script setup>
 import {ref, reactive} from "vue";
-import axios from "axios";
-import { createToaster } from "@meforma/vue-toaster";
-const toast = createToaster({
-  /* options */
-});
+import {useUserStore} from "../../js/user.js";
+const stateUser = useUserStore();
 
 const logInfo = ref({
   email: "",
@@ -14,24 +11,15 @@ const logInfo = ref({
 const user = reactive({});
 
 async function login(){
-  await axios.get(`http://localhost:3001/users?email=${logInfo.value.email}`)
-      .then((res) => Object.assign(user, res.data));
+  await stateUser.getUser(logInfo.value.email);
 
-  if(!user[0]){
-    toast.error("Please check your email and password!");
+  if(stateUser.user[0]){
+    await stateUser.login(logInfo.value.password);
+
+    logInfo.value.email = "";
+    logInfo.value.password = "";
   }
 
-  if(logInfo.value.password !== user[0].password){
-    toast.error("Please check your email and password!");
-  }else{
-    delete user[0].password;
-    user[0].auth=true;
-    localStorage.setItem("user", JSON.stringify(user[0]));
-    toast.success("password mach khaise!");
-  }
-
-    // logInfo.value.email = "";
-    // logInfo.value.password = "";
 }
 </script>
 
@@ -66,6 +54,7 @@ async function login(){
                         type="password"
                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                         placeholder="********"
+                        autoComplete="true"
                         required
                     />
                   </div>
