@@ -1,4 +1,12 @@
 {
+  "tokens": [
+    {
+      "user_id": 1,
+      "token": "gn74yzOy5RVf",
+      "validation_till": 1697199247533,
+      "id": 1
+    }
+  ],
   "users": [
     {
       "id": 1,

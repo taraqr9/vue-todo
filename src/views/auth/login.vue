@@ -11,15 +11,10 @@ const logInfo = ref({
 const user = reactive({});
 
 async function login(){
-  await stateUser.getUser(logInfo.value.email);
-
-  if(stateUser.user[0]){
-    await stateUser.login(logInfo.value.password);
-
-    logInfo.value.email = "";
-    logInfo.value.password = "";
-  }
-
+  await stateUser.login(logInfo.value.email, logInfo.value.password).then(() =>
+    logInfo.value.email = "",
+    logInfo.value.password = ""
+  );
 }
 </script>
 

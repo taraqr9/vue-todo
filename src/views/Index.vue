@@ -39,7 +39,6 @@ async function getTodos() {
   showNextPageButton.value = todos.length === 10;
 
   showPreviousPageButton.value = pageNumber.value > 1;
-  console.log("name ", stateUser.user.name);
 }
 
 function nextPage(){

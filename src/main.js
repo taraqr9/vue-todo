@@ -8,27 +8,33 @@ import axios from "axios";
 
 const pinia = createPinia();
 
-
-// Perform some actions before creating the Vue app
 (async () => {
-    const localUser = reactive({});
-    const dbUser = reactive({});
+    let localUser = localStorage.getItem('user')
 
-    const parseData =  localStorage.getItem('user');
+    if(localUser){
+        localUser = JSON.parse(localUser);
 
+        if(localUser.accessToken){
+            console.log("have token");
+           const dbUser = reactive({});
+            const localUserIdAndToken = localUser.accessToken.split('|');
 
-    if(localStorage.getItem('user') && parseData[0] !== '0'){
-        Object.assign(localUser, JSON.parse(parseData));
-
-        await axios.get(`http://localhost:3001/users?email=${localUser.email}`)
-            .then((res) => Object.assign(dbUser, res.data));
-
-        if(dbUser.auth === true){
-            localStorage.setItem('user', JSON.stringify(dbUser));
-            await router.push({path: '/'});
+            await axios.get(`http://localhost:3001/tokens?user_id=${localUserIdAndToken[0]}&token=${localUserIdAndToken[1]}`).then((res) =>{
+                Object.assign(dbUser, res.data[0])
+            }).then(() =>{
+                // if(localUserIdAndToken[1] !== dbUser.token){
+                //     return router.push({path: '/login'});
+                // }
+            });
+        }else{
+            // console.log("No one token");
+            // localStorage.setItem('user',JSON.stringify(userAuth));
+            // return router.push({path: '/login'});
         }
     }else{
-        await router.push({path: '/login'});
+        // console.log("No two token");
+        // localStorage.setItem('user',JSON.stringify(userAuth));
+        // return router.push({path: '/login'});
     }
 
     const app = createApp(App)
