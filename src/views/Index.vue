@@ -29,14 +29,11 @@ const toast = createToaster({
 async function getTodos() {
   const res = await fetch(`${baseUrl}/todos?user_id=${stateUser.user.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
   totalTodo.value = (await (await fetch(`${baseUrl}/meta`)).json()).total_todo;
-  totalPage.value = Math.ceil(totalTodo.value / itemsPerPage.value);     // total page
-
-  // Assign the sorted data to your 'todos' variable
-  todos.length = 0; // Clear the existing 'todos' array
-  todos.push(...await res.json()); // Push the sorted data into 'todos'
+  totalPage.value = Math.ceil(stateUser.user.totalTodos / itemsPerPage.value);     // total page
+  todos.length = 0;
+  todos.push(...await res.json());
 
   showNextPageButton.value = todos.length === 10;
-
   showPreviousPageButton.value = pageNumber.value > 1;
 }
 
@@ -68,7 +65,11 @@ async function getAllStatus() {
 async function destroy(id) {
   if (window.confirm("You want to delete the todo?")) {
     await axios.delete(`${baseUrl}/todos/` + id);
+
     todos.length=0;
+    stateUser.user.totalTodos -= 1;
+    localStorage.setItem('user', JSON.stringify(stateUser.user));
+
     await getTodos();
     toast.success('Task Deleted successfully!');
   }
@@ -116,7 +117,7 @@ onMounted(() => {
 
 onBeforeMount(() => {
   stateUser.stateUpdate();
-  console.log("Index called");
+  stateUser.checkUserAndToken();
 })
 </script>
 
@@ -158,7 +159,7 @@ onBeforeMount(() => {
       <main class="px-16 py-6 md:col-span-10 bg-gray-100 h-full">
         <div class="navbar bg-base-100 rounded">
           <div class="flex-1">
-            <a href="/" class="btn btn-ghost normal-case text-xl">Todo</a>
+            <RouterLink to="/" class="btn btn-ghost normal-case text-xl">Todo</RouterLink>
           </div>
 
           <div class="flex-1 border-accent/25 rounded">
@@ -207,12 +208,10 @@ onBeforeMount(() => {
                 </div>
               </label>
               <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li>{{ stateUser.user.user.name }}
-                </li>
                 <li>
                   <a class="justify-between">
-                    Profile
-                    <span class="badge">New</span>
+                  <RouterLink to="/profile">Profile</RouterLink>
+<!--                    <span class="badge">New</span>-->
                   </a>
                 </li>
                 <li><a>Settings</a></li>

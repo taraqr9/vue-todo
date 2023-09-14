@@ -1,16 +1,15 @@
 <script setup>
 import {ref, reactive, onMounted, onBeforeMount} from "vue";
 import {createToaster} from "@meforma/vue-toaster";
+import {useUserStore} from "../js/user.js";
+import {useRoute, useRouter} from "vue-router";
 
 const baseUrl = "http://localhost:3001";
 const statuses = reactive([]);
 const priorities = reactive([]);
-const toast = createToaster({ /* options */ });
-
-import {useUserStore} from "../js/user.js";
-import axios from "axios";
-
+const toast = createToaster({});
 const stateUser = useUserStore();
+const router = useRouter();
 
 const todo = ref({
   user_id: "",
@@ -27,24 +26,27 @@ async function create() {
   todo.value.created_at = currentDateTime;
   todo.value.updated_at = currentDateTime;
 
-  await fetch(`${baseUrl}/todos`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(todo.value),
-  }).then(() => {
-    stateUser.user.totalTodos += 1;
 
-    localStorage.setItem('user', JSON.stringify(stateUser.user));
-  });
+  if(await stateUser.checkUserAndToken() === true){
+    await fetch(`${baseUrl}/todos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(todo.value),
+    }).then(() => {
+      stateUser.user.totalTodos += 1;
 
-  toast.success("Todo created successfully!");
+      localStorage.setItem('user', JSON.stringify(stateUser.user));
+    });
 
-  todo.value.name = "";
-  todo.value.status = "";
-  todo.value.priority = "";
-  todo.value.created_at = "";
+    toast.success("Todo created successfully!");
+
+    todo.value.name = "";
+    todo.value.status = "";
+    todo.value.priority = "";
+    todo.value.created_at = "";
+  }
 }
 
 async function getAllStatus() {

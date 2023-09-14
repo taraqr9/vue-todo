@@ -25,7 +25,7 @@ const pinia = createPinia();
             const dbUserAuth = reactive({});
             const localUserIdAndToken = localUser.accessToken.split('|');
 
-            await axios.get(`http://localhost:3001/tokens?user_id=${localUserIdAndToken[0]}&token=${localUserIdAndToken[1]}`).then((res) => {
+            await axios.get(`http://localhost:3001/tokens?user_id=${localUser.user.id}&token=${localUserIdAndToken[1]}`).then((res) => {
                 Object.assign(dbUserAuth, res.data[0])
             }).then(async () => {
                 if (localUserIdAndToken[1] === dbUserAuth.token) {

@@ -9,7 +9,6 @@ const toast = createToaster({});
 export const useUserStore = defineStore('id', to => {
 
     const user = reactive({});
-    const totalTodo = ref(0);
     const userAuth = ({
         'user': '',
         'accessToken': '',
@@ -87,9 +86,7 @@ export const useUserStore = defineStore('id', to => {
 
     async function stateUpdate() {
         const localUser = JSON.parse(localStorage.getItem('user'))
-        console.log("printing local user: ", localUser);
         Object.assign(user, localUser);
-        console.log("User js  called");
     }
 
 
@@ -119,6 +116,25 @@ export const useUserStore = defineStore('id', to => {
         return inputString.split('|');
     }
 
+    async function checkUserAndToken(){
+        const localUser = JSON.parse(localStorage.getItem('user'));
+        const localUserIdAndToken = localUser.accessToken.split('|');
+        const dbUser = await axios.get(`http://localhost:3001/tokens?user_id=${localUser.user.id}&token=${localUserIdAndToken[1]}`);
 
-    return {user, login, logout, stateUpdate, totalTodo}
+        if(dbUser.data.length === 0){
+            localStorage.setItem('user', JSON.stringify(userAuth));
+            localStorage.setItem('user', JSON.stringify(''));
+            toast.error('Something went wrong, please login again!');
+            setTimeout(function(){
+                window.location.reload();
+                return false;
+            }, 3000);
+        }else{
+            return true;
+        }
+
+    }
+
+
+    return {user, login, logout, stateUpdate, checkUserAndToken}
 })

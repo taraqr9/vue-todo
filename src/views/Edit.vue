@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import {reactive, onMounted, onBeforeMount} from "vue";
 import { useRoute } from "vue-router";
 import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
@@ -33,7 +33,7 @@ async function getAllPriorities() {
 }
 
 async function update() {
-  try{
+  if(await stateUser.checkUserAndToken() === true){
     todo.updated_at = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
 
     await fetch(`${baseUrl}/todos/${todo.id}`, {
@@ -46,8 +46,6 @@ async function update() {
 
     toast.success("Todo updated successfully!")
     await getTodoDetails();
-  }catch (error) {
-    toast.error(error);
   }
 }
 

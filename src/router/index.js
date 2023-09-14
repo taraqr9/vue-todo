@@ -5,6 +5,8 @@ import TodoView from '../views/View.vue'
 import TodoEdit from '../views/Edit.vue'
 import About from '../About.vue'
 import Login from "../views/auth/login.vue";
+import Profile from "../views/auth/Profile.vue";
+import NotFound from "../views/auth/NotFound.vue";
 
 const routes = [
     {path: '/index', component: Index},
@@ -13,7 +15,9 @@ const routes = [
     {path: '/todo/:id', component: TodoView},
     {path: '/todo/:id/edit', component: TodoEdit},
     {path: '/login', component: Login},
+    {path: '/profile', component: Profile},
     {path: '/about', component: About},
+    { path: '/:pathMatch(.*)*', component: NotFound },
 ]
 
 const router = createRouter({
