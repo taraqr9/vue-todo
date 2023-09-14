@@ -2,16 +2,13 @@
 import { useRoute } from "vue-router";
 import { reactive, onMounted } from "vue";
 import { createToaster } from "@meforma/vue-toaster";
+import {useUserStore} from "../js/user.js";
 
 const baseUrl = "http://localhost:3001";
 const route = useRoute();
 const id = route.params.id;
 const todo = reactive({});
-const toast = createToaster({
-  /* options */
-});
-import {useUserStore} from "../js/user.js";
-
+const toast = createToaster({});
 const stateUser = useUserStore();
 
 async function getTodoDetails() {

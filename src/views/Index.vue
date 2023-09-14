@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import {ref, reactive, computed, onMounted, onBeforeMount} from "vue";
 import axios from "axios";
 import { createToaster } from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
@@ -27,9 +27,8 @@ const toast = createToaster({
   /* options */
 });
 async function getTodos() {
-  const res = await fetch(`${baseUrl}/todos?order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
+  const res = await fetch(`${baseUrl}/todos?user_id=${stateUser.user.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
   totalTodo.value = (await (await fetch(`${baseUrl}/meta`)).json()).total_todo;
-
   totalPage.value = Math.ceil(totalTodo.value / itemsPerPage.value);     // total page
 
   // Assign the sorted data to your 'todos' variable
@@ -110,11 +109,15 @@ async function handleStatusSelection(todo, status) {
 }
 
 onMounted(() => {
-  stateUser.stateUpdate();
   getTodos();
   getAllStatus();
   getAllPriorities();
 });
+
+onBeforeMount(() => {
+  stateUser.stateUpdate();
+  console.log("Index called");
+})
 </script>
 
 
@@ -159,7 +162,7 @@ onMounted(() => {
           </div>
 
           <div class="flex-1 border-accent/25 rounded">
-            <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ totalTodo }}</a>
+            <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ stateUser.user.totalTodos }}</a>
           </div>
 
           <div class="flex-none gap-2">
@@ -204,7 +207,8 @@ onMounted(() => {
                 </div>
               </label>
               <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li>{{ stateUser.user.name }}</li>
+                <li>{{ stateUser.user.user.name }}
+                </li>
                 <li>
                   <a class="justify-between">
                     Profile

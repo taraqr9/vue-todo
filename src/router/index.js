@@ -21,20 +21,18 @@ const router = createRouter({
     routes
 })
 
-// router.beforeEach((to, from, next) => {
-//     const user = JSON.parse(localStorage.getItem('user'));
-//     if (!user || (user.auth !== true && to.name !== 'Login')) {
-//         console.log("one : ", to);
-//         next({path: '/login'});
-//     } else if (user.auth === true && to.name === 'Login') {
-//         console.log("two : ", from);
-//
-//         next({path: '/index'});
-//     } else {
-//         console.log("three : ", to);
-//
-//         next();
-//     }
-// });
+router.beforeEach((to, from, next) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!user || (user.auth !== true && to.path !== '/login')) {
+        next({path: '/login'});
+    }
+    else if (user.auth === true && to.path === '/login') {
+        next({ path: '/index'});
+    }
+    else {
+        next();
+    }
+});
 
 export default router

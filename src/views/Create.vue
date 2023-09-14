@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import {ref, reactive, onMounted, onBeforeMount} from "vue";
 import {createToaster} from "@meforma/vue-toaster";
 
 const baseUrl = "http://localhost:3001";
@@ -8,10 +8,12 @@ const priorities = reactive([]);
 const toast = createToaster({ /* options */ });
 
 import {useUserStore} from "../js/user.js";
+import axios from "axios";
 
 const stateUser = useUserStore();
 
 const todo = ref({
+  user_id: "",
   name: "",
   status: "",
   priority: "",
@@ -21,6 +23,7 @@ const todo = ref({
 
 async function create() {
   const currentDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
+  todo.value.user_id = stateUser.user.user.id;
   todo.value.created_at = currentDateTime;
   todo.value.updated_at = currentDateTime;
 
@@ -30,6 +33,10 @@ async function create() {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(todo.value),
+  }).then(() => {
+    stateUser.user.totalTodos += 1;
+
+    localStorage.setItem('user', JSON.stringify(stateUser.user));
   });
 
   toast.success("Todo created successfully!");
@@ -51,10 +58,13 @@ async function getAllPriorities() {
 }
 
 onMounted(() => {
-  stateUser.stateUpdate()
   getAllStatus();
   getAllPriorities();
 });
+
+onBeforeMount(() => {
+  stateUser.stateUpdate();
+})
 </script>
 
 <template>

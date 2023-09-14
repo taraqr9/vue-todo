@@ -4,15 +4,14 @@ import { useRoute } from "vue-router";
 import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
 
-const stateUser = useUserStore();
-
 const baseUrl = "http://localhost:3001";
 const route = useRoute();
 const id = route.params.id;
 const todo = reactive({});
 const statuses = reactive({});
 const priorities = reactive({});
-const toast = createToaster({ /* options */ });
+const toast = createToaster({});
+const stateUser = useUserStore();
 
 async function getTodoDetails() {
   try {

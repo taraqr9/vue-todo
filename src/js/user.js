@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import axios from "axios";
 import {createToaster} from "@meforma/vue-toaster";
 import router from '../router/index.js'
@@ -9,6 +9,13 @@ const toast = createToaster({});
 export const useUserStore = defineStore('id', to => {
 
     const user = reactive({});
+    const totalTodo = ref(0);
+    const userAuth = ({
+        'user': '',
+        'accessToken': '',
+        'auth': false,
+        'totalTodos': 0
+    });
 
     async function login(email, password) {
         await axios.get(`http://localhost:3001/users?email=${email}&password=${password}`)
@@ -22,15 +29,25 @@ export const useUserStore = defineStore('id', to => {
                 validation_till: addOneMonthToDate()
             })
                 .then(function (response) {
-                    const userAuth = ({
-                        'accessToken': user[0].id + '|' + response.data.token,
-                        'auth': true
-                    });
-                    localStorage.setItem("user", JSON.stringify(userAuth));
+                    delete user[0].password;
+                    userAuth.user = user[0];
+                    userAuth.accessToken = user[0].id + '|' + response.data.token;
+                    userAuth.auth = true;
                 })
                 .catch(function (error) {
-                    toast.success(error);
+                    return toast.error(error);
                 });
+
+            await axios.get(`http://localhost:3001/todos?user_id=${user[0].id}`)
+                .then(async (res)=>{
+                    let findLength = res.data.filter(function(todo) {
+                        return todo.id;
+                    });
+
+                    userAuth.totalTodos = findLength.length;
+                });
+
+            localStorage.setItem("user", JSON.stringify(userAuth));
 
             toast.success("Login successfully!");
 
@@ -43,14 +60,15 @@ export const useUserStore = defineStore('id', to => {
     async function logout() {
         const userAccess = JSON.parse(localStorage.getItem('user'));
         const userAuth = ({
+            'user': "",
             'accessToken': "",
-            'auth': false
+            'auth': false,
+            'totalTodos': 0
         });
         if(userAccess.accessToken){
             const userIdAndToken = splitStringByPipe(userAccess.accessToken);
             const token = await axios.get(`http://localhost:3001/tokens?user_id=${userIdAndToken[0]}&token=${userIdAndToken[1]}`);
             if (token) {
-                console.log(userAccess);
                 await axios.delete(`http://localhost:3001/tokens/${token.data[0].id}`);
 
                 localStorage.setItem('user', JSON.stringify(userAuth));
@@ -68,8 +86,12 @@ export const useUserStore = defineStore('id', to => {
     }
 
     async function stateUpdate() {
-        Object.assign(user, JSON.parse(localStorage.getItem('user')));
+        const localUser = JSON.parse(localStorage.getItem('user'))
+        console.log("printing local user: ", localUser);
+        Object.assign(user, localUser);
+        console.log("User js  called");
     }
+
 
     const generateRandomString = (length) => {
         let result = '';
@@ -98,5 +120,5 @@ export const useUserStore = defineStore('id', to => {
     }
 
 
-    return {user, login, logout, stateUpdate}
+    return {user, login, logout, stateUpdate, totalTodo}
 })
