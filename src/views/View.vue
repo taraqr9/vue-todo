@@ -4,7 +4,6 @@ import { reactive, onMounted } from "vue";
 import { createToaster } from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
 
-const baseUrl = "http://localhost:3001";
 const route = useRoute();
 const id = route.params.id;
 const todo = reactive({});
@@ -13,7 +12,7 @@ const stateUser = useUserStore();
 
 async function getTodoDetails() {
   try {
-    const res = await fetch(`${baseUrl}/todos/${id}`);
+    const res = await fetch(`${stateUser.dbUrl}/todos/${id}`);
     Object.assign(todo, await res.json());
   } catch (error) {
     console.error("Error fetching todo:", error);
@@ -22,19 +21,22 @@ async function getTodoDetails() {
 
 async function updateStatus(){
   try {
-    todo.updated_at = new Date().toLocaleString("en-US", {
-      timeZone: "Asia/Dhaka",
-    });
-    todo.status = 'Completed';
-    await fetch(`${baseUrl}/todos/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(todo),
-    });
+    stateUser.stateUpdate();
+    if(await stateUser.checkUserAndToken() === true) {
+      todo.updated_at = new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Dhaka",
+      });
+      todo.status = 'Completed';
+      await fetch(`${stateUser.dbUrl}/todos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(todo),
+      });
 
-    toast.success("Status updated successfully");
+      toast.success("Status updated successfully");
+    }
   } catch (error) {
     toast.error("The error is: " + error);
   }

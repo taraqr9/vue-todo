@@ -28,7 +28,6 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const auth = JSON.parse(localStorage.getItem('auth'));
-    console.log(auth !== true);
 
     if (!user && (auth !== true && to.path !== '/login')) {
         next({path: '/login'});

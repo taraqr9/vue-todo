@@ -4,7 +4,6 @@ import { useRoute } from "vue-router";
 import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
 
-const baseUrl = "http://localhost:3001";
 const route = useRoute();
 const id = route.params.id;
 const todo = reactive({});
@@ -15,7 +14,7 @@ const stateUser = useUserStore();
 
 async function getTodoDetails() {
   try {
-    const res = await fetch(`${baseUrl}/todos/${id}`);
+    const res = await fetch(`${stateUser.dbUrl}/todos/${id}`);
     Object.assign(todo, await res.json());
   } catch (error) {
     console.error("Error fetching todo:", error);
@@ -23,12 +22,12 @@ async function getTodoDetails() {
 }
 
 async function getAllStatus() {
-  const res = await fetch(`${baseUrl}/statuses`);
+  const res = await fetch(`${stateUser.dbUrl}/statuses`);
   Object.assign(statuses, await res.json());
 }
 
 async function getAllPriorities() {
-  const res = await fetch(`${baseUrl}/priorities`);
+  const res = await fetch(`${stateUser.dbUrl}/priorities`);
   Object.assign(priorities, await res.json());
 }
 
@@ -37,7 +36,7 @@ async function update() {
   if(await stateUser.checkUserAndToken() === true){
     todo.updated_at = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
 
-    await fetch(`${baseUrl}/todos/${todo.id}`, {
+    await fetch(`${stateUser.dbUrl}/todos/${todo.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -6,7 +6,6 @@ import {useUserStore} from "../js/user.js";
 
 const stateUser = useUserStore();
 
-const baseUrl = "http://localhost:3001";
 const todos = reactive([]);
 const statuses = reactive([]);
 const priorities = reactive([]);
@@ -26,7 +25,7 @@ const toast = createToaster({
   /* options */
 });
 async function getTodos() {
-  const res = await fetch(`${baseUrl}/todos?user_id=${stateUser.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
+  const res = await fetch(`${stateUser.dbUrl}/todos?user_id=${stateUser.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
   totalPage.value = Math.ceil(stateUser.totalTodos / itemsPerPage.value);     // total page
   todos.length = 0;
   todos.push(...await res.json());
@@ -51,12 +50,12 @@ function updatePageNumber(updatePageNumber){
 }
 
 async function getAllPriorities() {
-  const res = await fetch(`${baseUrl}/priorities`);
+  const res = await fetch(`${stateUser.dbUrl}/priorities`);
   Object.assign(priorities, await res.json());
 }
 
 async function getAllStatus() {
-  const res = await fetch(`${baseUrl}/statuses`);
+  const res = await fetch(`${stateUser.dbUrl}/statuses`);
   Object.assign(statuses, await res.json());
 }
 
@@ -64,7 +63,7 @@ async function destroy(id) {
   if (window.confirm("You want to delete the todo?")) {
     stateUser.stateUpdate();
     if(await stateUser.checkUserAndToken() === true) {
-      await axios.delete(`${baseUrl}/todos/` + id);
+      await axios.delete(`${stateUser.dbUrl}/todos/` + id);
 
       todos.length = 0;
       stateUser.totalTodos -= 1;
@@ -93,14 +92,13 @@ const filteredTodos = computed(() => {
 async function handleStatusSelection(todo, status) {
   try {
     stateUser.stateUpdate();
-    console.log(await stateUser.checkUserAndToken());
     if(await stateUser.checkUserAndToken() === true){
       todo.updated_at = new Date().toLocaleString("en-US", {
         timeZone: "Asia/Dhaka",
       });
       todo.status = status.name;
 
-      await fetch(`${baseUrl}/todos/${todo.id}`, {
+      await fetch(`${stateUser.dbUrl}/todos/${todo.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

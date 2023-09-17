@@ -18,7 +18,6 @@ const pinia = createPinia();
     const totalTodos = ref(0);
 
     if (localUser && localUser !== "" && localAuth === true) {
-        console.log("local auth", localAuth);
         const dbUser = reactive({});
         const dbUserAuth = reactive({});
 

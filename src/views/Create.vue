@@ -2,14 +2,11 @@
 import {ref, reactive, onMounted, onBeforeMount} from "vue";
 import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
-import {useRouter} from "vue-router";
 
-const baseUrl = "http://localhost:3001";
 const statuses = reactive([]);
 const priorities = reactive([]);
 const toast = createToaster({});
 const stateUser = useUserStore();
-const router = useRouter();
 
 const todo = ref({
   user_id: "",
@@ -28,7 +25,7 @@ async function create() {
 
   stateUser.stateUpdate();
   if(await stateUser.checkUserAndToken() === true){
-    await fetch(`${baseUrl}/todos`, {
+    await fetch(`${stateUser.dbUrl}/todos`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,12 +46,12 @@ async function create() {
 }
 
 async function getAllStatus() {
-  const res = await fetch(`${baseUrl}/statuses`);
+  const res = await fetch(`${stateUser.dbUrl}/statuses`);
   Object.assign(statuses, await res.json());
 }
 
 async function getAllPriorities() {
-  const res = await fetch(`${baseUrl}/priorities`);
+  const res = await fetch(`${stateUser.dbUrl}/priorities`);
   Object.assign(priorities, await res.json());
 }
 

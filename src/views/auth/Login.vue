@@ -1,5 +1,5 @@
 <script setup>
-import {ref, reactive, onBeforeMount} from "vue";
+import {ref, reactive} from "vue";
 import {useUserStore} from "../../js/user.js";
 const stateUser = useUserStore();
 

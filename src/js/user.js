@@ -7,19 +7,19 @@ import router from '../router/index.js'
 const toast = createToaster({});
 
 export const useUserStore = defineStore('id', to => {
-    const baseUrl = "http://localhost:3001";
+    const dbUrl = "http://localhost:3001";
     const user = ref({});
     const accessToken = ref();
     const auth = ref(false);
     const totalTodos = ref(0);
 
     async function login(email, password) {
-        await axios.get(`${baseUrl}/users?email=${email}&password=${password}`)
+        await axios.get(`${dbUrl}/users?email=${email}&password=${password}`)
             .then((res) => user.value = res.data[0])
-            .catch(()=> toast.error("Please check your email and password"));
+            .catch(() => toast.error("Please check your email and password"));
 
-        if(user.value){
-            axios.post(`${baseUrl}/tokens`, {
+        if (user.value) {
+            axios.post(`${dbUrl}/tokens`, {
                 user_id: user.value.id,
                 token: generateRandomString(12),
                 validation_till: addOneMonthToDate()
@@ -33,9 +33,9 @@ export const useUserStore = defineStore('id', to => {
                     return toast.error(error);
                 });
 
-            await axios.get(`${baseUrl}/todos?user_id=${user.value.id}`)
-                .then(async (res)=>{
-                    let findLength = res.data.filter(function(todo) {
+            await axios.get(`${dbUrl}/todos?user_id=${user.value.id}`)
+                .then(async (res) => {
+                    let findLength = res.data.filter(function (todo) {
                         return todo.id;
                     });
 
@@ -50,26 +50,26 @@ export const useUserStore = defineStore('id', to => {
             toast.success("Login successfully!");
 
             await router.push({path: 'Index'});
-        }else{
+        } else {
             toast.error("Please check your email and password");
         }
     }
 
     async function logout() {
         const accessToken = JSON.parse(localStorage.getItem('accessToken'));
-        if(accessToken){
+        if (accessToken) {
             const userIdAndToken = splitStringByPipe(accessToken);
-            const token = await (await axios.get(`${baseUrl}/tokens?user_id=${userIdAndToken[0]}&token=${userIdAndToken[1]}`)).data[0];
+            const token = await (await axios.get(`${dbUrl}/tokens?user_id=${userIdAndToken[0]}&token=${userIdAndToken[1]}`)).data[0];
 
             if (token) {
-                await axios.delete(`${baseUrl}/tokens/${token.id}`);
+                await axios.delete(`${dbUrl}/tokens/${token.id}`);
                 clearLocalData();
                 await router.push({path: '/login'});
             } else {
                 clearLocalData();
                 await router.push({path: '/login'});
             }
-        }else {
+        } else {
             clearLocalData();
             await router.push({path: '/login'});
         }
@@ -109,46 +109,39 @@ export const useUserStore = defineStore('id', to => {
         return inputString.split('|');
     }
 
-    async function checkUserAndToken(){
-
+    async function checkUserAndToken() {
         const userIdAndToken = accessToken.value.split('|');
-        await axios.get(`http://localhost:3001/users/${user.value.id}`).then(async (res) => {
-            await axios.get(`http://localhost:3001/tokens?user_id=${res.data.id}&token=${userIdAndToken[1]}`).then(() => {
-                console.log("user done");
-                return true;
-            });
-        }).catch(function (error){
-            clearLocalData();
-            toast.error('Something went wrong, please login again!', error.response);
-                setTimeout(function(){
-                    window.location.reload();
+
+        try {
+            const getUserResponse = await axios.get(`http://localhost:3001/users/${user.value.id}`);
+
+            if (getUserResponse) {
+                const getTokenResponse = await axios.get(`http://localhost:3001/tokens?user_id=${getUserResponse.data.id}&token=${userIdAndToken[1]}`);
+
+                if(getTokenResponse.data.length === 0){
+                    clearLocalData();
+                    toast.error('Something went wrong, please login again!');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+
                     return false;
-                }, 1000);
-        });
+                }
+                return true;
+            }
+        } catch (error) {
+            clearLocalData();
+            toast.error('Something went wrong, please login again!');
+            setTimeout(function () {
+                window.location.reload();
+            }, 1000);
 
-
-
-        // console.log("userid", userId);
-        // if(!userId){
-        //     console.log("helloe");
-        // }else{
-        //     console.log("one");
-        // }
-        // const dbUser = await axios.get(`${baseUrl}/tokens?user_id=${userId.data.id}&token=${userIdAndToken[1]}`);
-        //
-        // if(dbUser.data.length === 0){
-        //     clearLocalData();
-        //     toast.error('Something went wrong, please login again!');
-        //     setTimeout(function(){
-        //         window.location.reload();
-        //         return false;
-        //     }, 1000);
-        // }else{
-        //     return true;
-        // }
+            return false;
+        }
+        return false;
     }
 
-    function clearLocalData(){
+    function clearLocalData() {
         localStorage.setItem('user', JSON.stringify(''));
         localStorage.setItem('accessToken', JSON.stringify(''));
         localStorage.setItem('auth', JSON.stringify(''));
@@ -157,5 +150,5 @@ export const useUserStore = defineStore('id', to => {
         return true;
     }
 
-    return {user, accessToken, auth, totalTodos, login, logout, stateUpdate, checkUserAndToken}
+    return {user, accessToken, auth, totalTodos, dbUrl, login, logout, stateUpdate, checkUserAndToken}
 })
