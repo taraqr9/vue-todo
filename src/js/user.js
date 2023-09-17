@@ -7,18 +7,19 @@ import router from '../router/index.js'
 const toast = createToaster({});
 
 export const useUserStore = defineStore('id', to => {
+    const baseUrl = "http://localhost:3001";
     const user = ref({});
     const accessToken = ref();
     const auth = ref(false);
     const totalTodos = ref(0);
 
     async function login(email, password) {
-        await axios.get(`http://localhost:3001/users?email=${email}&password=${password}`)
+        await axios.get(`${baseUrl}/users?email=${email}&password=${password}`)
             .then((res) => user.value = res.data[0])
             .catch(()=> toast.error("Please check your email and password"));
 
         if(user.value){
-            axios.post('http://localhost:3001/tokens', {
+            axios.post(`${baseUrl}/tokens`, {
                 user_id: user.value.id,
                 token: generateRandomString(12),
                 validation_till: addOneMonthToDate()
@@ -32,7 +33,7 @@ export const useUserStore = defineStore('id', to => {
                     return toast.error(error);
                 });
 
-            await axios.get(`http://localhost:3001/todos?user_id=${user.value.id}`)
+            await axios.get(`${baseUrl}/todos?user_id=${user.value.id}`)
                 .then(async (res)=>{
                     let findLength = res.data.filter(function(todo) {
                         return todo.id;
@@ -58,10 +59,10 @@ export const useUserStore = defineStore('id', to => {
         const accessToken = JSON.parse(localStorage.getItem('accessToken'));
         if(accessToken){
             const userIdAndToken = splitStringByPipe(accessToken);
-            const token = await (await axios.get(`http://localhost:3001/tokens?user_id=${userIdAndToken[0]}&token=${userIdAndToken[1]}`)).data[0];
+            const token = await (await axios.get(`${baseUrl}/tokens?user_id=${userIdAndToken[0]}&token=${userIdAndToken[1]}`)).data[0];
 
             if (token) {
-                await axios.delete(`http://localhost:3001/tokens/${token.id}`);
+                await axios.delete(`${baseUrl}/tokens/${token.id}`);
                 clearLocalData();
                 await router.push({path: '/login'});
             } else {
@@ -133,7 +134,7 @@ export const useUserStore = defineStore('id', to => {
         // }else{
         //     console.log("one");
         // }
-        // const dbUser = await axios.get(`http://localhost:3001/tokens?user_id=${userId.data.id}&token=${userIdAndToken[1]}`);
+        // const dbUser = await axios.get(`${baseUrl}/tokens?user_id=${userId.data.id}&token=${userIdAndToken[1]}`);
         //
         // if(dbUser.data.length === 0){
         //     clearLocalData();
