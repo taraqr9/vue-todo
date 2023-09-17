@@ -109,9 +109,11 @@ export const useUserStore = defineStore('id', to => {
     }
 
     async function checkUserAndToken(){
+
         const userIdAndToken = accessToken.value.split('|');
-        await axios.get(`http://localhost:3001/users/${user.value.id}`).then(async () => {
-            await axios.get(`http://localhost:3001/tokens?user_id=${userId.data.id}&token=${userIdAndToken[1]}`).then(() => {
+        await axios.get(`http://localhost:3001/users/${user.value.id}`).then(async (res) => {
+            await axios.get(`http://localhost:3001/tokens?user_id=${res.data.id}&token=${userIdAndToken[1]}`).then(() => {
+                console.log("user done");
                 return true;
             });
         }).catch(function (error){
@@ -122,24 +124,27 @@ export const useUserStore = defineStore('id', to => {
                     return false;
                 }, 1000);
         });
-        console.log("userid", userId);
-        if(!userId){
-            console.log("helloe");
-        }else{
-            console.log("one");
-        }
-        const dbUser = await axios.get(`http://localhost:3001/tokens?user_id=${userId.data.id}&token=${userIdAndToken[1]}`);
 
-        if(dbUser.data.length === 0){
-            clearLocalData();
-            toast.error('Something went wrong, please login again!');
-            setTimeout(function(){
-                window.location.reload();
-                return false;
-            }, 1000);
-        }else{
-            return true;
-        }
+
+
+        // console.log("userid", userId);
+        // if(!userId){
+        //     console.log("helloe");
+        // }else{
+        //     console.log("one");
+        // }
+        // const dbUser = await axios.get(`http://localhost:3001/tokens?user_id=${userId.data.id}&token=${userIdAndToken[1]}`);
+        //
+        // if(dbUser.data.length === 0){
+        //     clearLocalData();
+        //     toast.error('Something went wrong, please login again!');
+        //     setTimeout(function(){
+        //         window.location.reload();
+        //         return false;
+        //     }, 1000);
+        // }else{
+        //     return true;
+        // }
     }
 
     function clearLocalData(){
