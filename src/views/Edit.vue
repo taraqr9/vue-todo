@@ -32,7 +32,6 @@ async function getAllPriorities() {
 }
 
 async function update() {
-  stateUser.stateUpdate();
   if(await stateUser.checkUserAndToken() === true){
     todo.updated_at = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
 

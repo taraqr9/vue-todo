@@ -110,6 +110,7 @@ export const useUserStore = defineStore('id', to => {
     }
 
     async function checkUserAndToken() {
+        await stateUpdate();
         const userIdAndToken = accessToken.value.split('|');
 
         try {

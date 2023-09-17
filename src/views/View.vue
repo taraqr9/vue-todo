@@ -21,7 +21,6 @@ async function getTodoDetails() {
 
 async function updateStatus(){
   try {
-    stateUser.stateUpdate();
     if(await stateUser.checkUserAndToken() === true) {
       todo.updated_at = new Date().toLocaleString("en-US", {
         timeZone: "Asia/Dhaka",

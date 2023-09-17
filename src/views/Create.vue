@@ -23,7 +23,6 @@ async function create() {
   todo.value.created_at = currentDateTime;
   todo.value.updated_at = currentDateTime;
 
-  stateUser.stateUpdate();
   if(await stateUser.checkUserAndToken() === true){
     await fetch(`${stateUser.dbUrl}/todos`, {
       method: "POST",

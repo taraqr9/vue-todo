@@ -61,7 +61,6 @@ async function getAllStatus() {
 
 async function destroy(id) {
   if (window.confirm("You want to delete the todo?")) {
-    stateUser.stateUpdate();
     if(await stateUser.checkUserAndToken() === true) {
       await axios.delete(`${stateUser.dbUrl}/todos/` + id);
 
@@ -91,7 +90,6 @@ const filteredTodos = computed(() => {
 
 async function handleStatusSelection(todo, status) {
   try {
-    stateUser.stateUpdate();
     if(await stateUser.checkUserAndToken() === true){
       todo.updated_at = new Date().toLocaleString("en-US", {
         timeZone: "Asia/Dhaka",
@@ -121,7 +119,6 @@ onMounted(() => {
 
 onBeforeMount(async() => {
   stateUser.stateUpdate();
-
 })
 </script>
 
