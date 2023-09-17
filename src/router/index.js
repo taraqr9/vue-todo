@@ -4,7 +4,7 @@ import TodoCreate from '../views/Create.vue'
 import TodoView from '../views/View.vue'
 import TodoEdit from '../views/Edit.vue'
 import About from '../About.vue'
-import Login from "../views/auth/login.vue";
+import Login from "../views/auth/Login.vue";
 import Profile from "../views/auth/Profile.vue";
 import NotFound from "../views/auth/NotFound.vue";
 
@@ -27,11 +27,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const user = JSON.parse(localStorage.getItem('user'));
+    const auth = JSON.parse(localStorage.getItem('auth'));
+    console.log(auth !== true);
 
-    if (!user || (user.auth !== true && to.path !== '/login')) {
+    if (!user && (auth !== true && to.path !== '/login')) {
         next({path: '/login'});
     }
-    else if (user.auth === true && to.path === '/login') {
+    else if (auth === true && to.path === '/login') {
         next({ path: '/index'});
     }
     else {

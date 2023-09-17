@@ -8,7 +8,6 @@ const stateUser = useUserStore();
 
 const baseUrl = "http://localhost:3001";
 const todos = reactive([]);
-const totalTodo = ref(0);
 const statuses = reactive([]);
 const priorities = reactive([]);
 const priority = ref("");
@@ -27,9 +26,8 @@ const toast = createToaster({
   /* options */
 });
 async function getTodos() {
-  const res = await fetch(`${baseUrl}/todos?user_id=${stateUser.user.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
-  totalTodo.value = (await (await fetch(`${baseUrl}/meta`)).json()).total_todo;
-  totalPage.value = Math.ceil(stateUser.user.totalTodos / itemsPerPage.value);     // total page
+  const res = await fetch(`${baseUrl}/todos?user_id=${stateUser.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
+  totalPage.value = Math.ceil(stateUser.totalTodos / itemsPerPage.value);     // total page
   todos.length = 0;
   todos.push(...await res.json());
 
@@ -64,14 +62,17 @@ async function getAllStatus() {
 
 async function destroy(id) {
   if (window.confirm("You want to delete the todo?")) {
-    await axios.delete(`${baseUrl}/todos/` + id);
+    stateUser.stateUpdate();
+    if(await stateUser.checkUserAndToken() === true && stateUser.auth === true) {
+      await axios.delete(`${baseUrl}/todos/` + id);
 
-    todos.length=0;
-    stateUser.user.totalTodos -= 1;
-    localStorage.setItem('user', JSON.stringify(stateUser.user));
+      todos.length = 0;
+      stateUser.totalTodos -= 1;
+      localStorage.setItem('user', JSON.stringify(stateUser.user));
 
-    await getTodos();
-    toast.success('Task Deleted successfully!');
+      await getTodos();
+      toast.success('Task Deleted successfully!');
+    }
   }
 }
 
@@ -91,19 +92,23 @@ const filteredTodos = computed(() => {
 
 async function handleStatusSelection(todo, status) {
   try {
-    todo.updated_at = new Date().toLocaleString("en-US", {
-      timeZone: "Asia/Dhaka",
-    });
-    todo.status = status.name;
+    stateUser.stateUpdate();
+    if(await stateUser.checkUserAndToken() === true){
+      todo.updated_at = new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Dhaka",
+      });
+      todo.status = status.name;
 
-    await fetch(`${baseUrl}/todos/${todo.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(todo),
-    });
-    toast.success("Status updated successfully");
+      await fetch(`${baseUrl}/todos/${todo.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(todo),
+      });
+      toast.success("Status updated successfully");
+    }
+
   } catch (error) {
     toast.error("The error is: " + error);
   }
@@ -115,9 +120,9 @@ onMounted(() => {
   getAllPriorities();
 });
 
-onBeforeMount(() => {
+onBeforeMount(async() => {
   stateUser.stateUpdate();
-  stateUser.checkUserAndToken();
+
 })
 </script>
 
@@ -163,7 +168,7 @@ onBeforeMount(() => {
           </div>
 
           <div class="flex-1 border-accent/25 rounded">
-            <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ stateUser.user.totalTodos }}</a>
+            <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ stateUser.totalTodos }}</a>
           </div>
 
           <div class="flex-none gap-2">
@@ -208,13 +213,14 @@ onBeforeMount(() => {
                 </div>
               </label>
               <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li>
-                  <a class="justify-between">
-                  <RouterLink to="/profile">Profile</RouterLink>
-<!--                    <span class="badge">New</span>-->
-                  </a>
-                </li>
-                <li><a>Settings</a></li>
+<!--                <li>-->
+<!--                  <a class="justify-between">-->
+<!--                  <RouterLink to="/profile">Profile</RouterLink>-->
+<!--&lt;!&ndash;                    <span class="badge">New</span>&ndash;&gt;-->
+<!--                  </a>-->
+<!--                </li>-->
+<!--                <li><a>Settings</a></li>-->
+                <li><a>{{ stateUser.user.name}}</a></li>
                 <li><a @click="stateUser.logout">Logout</a></li>
               </ul>
             </div>

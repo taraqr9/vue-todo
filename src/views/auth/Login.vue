@@ -1,5 +1,5 @@
 <script setup>
-import {ref, reactive} from "vue";
+import {ref, reactive, onBeforeMount} from "vue";
 import {useUserStore} from "../../js/user.js";
 const stateUser = useUserStore();
 
@@ -62,12 +62,12 @@ async function login(){
 <!--                            <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>-->
 <!--                          </div>-->
                       </div>
-                      <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
+<!--                      <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>-->
                   </div>
                   <button type="submit" class="w-full btn btn-success">Sign in</button>
-                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-                      Don’t have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign Up</a>
-                  </p>
+<!--                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">-->
+<!--                      Don’t have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign Up</a>-->
+<!--                  </p>-->
               </form>
           </div>
       </div>

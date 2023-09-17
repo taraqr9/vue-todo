@@ -1,4 +1,4 @@
-import {createApp, reactive} from 'vue'
+import {createApp, reactive, ref} from 'vue'
 import './style.css'
 import App from './App.vue'
 import router from './router/index.js'
@@ -9,50 +9,59 @@ import axios from "axios";
 const pinia = createPinia();
 
 (async () => {
-    let localUser = localStorage.getItem('user')
-    const userAuth = ({
-        'user': '',
-        'accessToken': '',
-        'auth': false,
-        'totalTodos': 0
-    });
+    let localUser = JSON.parse(localStorage.getItem('user'));
+    let localAccessToken = localStorage.getItem('accessToken');
+    let localAuth = JSON.parse(localStorage.getItem('auth'));
 
-    if (localUser) {
-        localUser = JSON.parse(localUser);
+    const accessToken = ref('');
+    const auth = ref(false);
+    const totalTodos = ref(0);
 
-        if (localUser.accessToken) {
-            const dbUser = reactive({});
-            const dbUserAuth = reactive({});
-            const localUserIdAndToken = localUser.accessToken.split('|');
+    if (localUser && localUser !== "" && localAuth === true) {
+        console.log("local auth", localAuth);
+        const dbUser = reactive({});
+        const dbUserAuth = reactive({});
 
-            await axios.get(`http://localhost:3001/tokens?user_id=${localUser.user.id}&token=${localUserIdAndToken[1]}`).then((res) => {
-                Object.assign(dbUserAuth, res.data[0])
+        if (localAccessToken) {
+            localAccessToken = localAccessToken.split('|')
+
+            await axios.get(`http://localhost:3001/tokens?user_id=${localUser.id}&token=${localAccessToken[1]}`).then((res) => {
+                Object.assign(dbUserAuth, res.data[0]);
+
             }).then(async () => {
-                if (localUserIdAndToken[1] === dbUserAuth.token) {
-                    await axios.get(`http://localhost:3001/users?id=${localUserIdAndToken[0]}`).then((res) => {
+                if (localAccessToken[1] === dbUserAuth.token) {
+                    await axios.get(`http://localhost:3001/users?id=${localUser.id}`).then((res) => {
                         Object.assign(dbUser, res.data[0])
                     })
 
-                    await axios.get(`http://localhost:3001/todos?user_id=${localUserIdAndToken[0]}`) // Getting total todo
+                    await axios.get(`http://localhost:3001/todos?user_id=${localAccessToken[0]}`) // Getting total todo
                         .then(async (res)=>{
                             let findLength = res.data.filter(function(todo) {
                                 return todo.id;
                             });
 
-                            userAuth.totalTodos = findLength.length;
+                            totalTodos.value = findLength.length;
+                            accessToken.value = dbUserAuth.user_id + '|' + localAccessToken[1];
+                            auth.value = true;
                         });
 
-                    delete dbUser.password;
+                    delete localUser.password;
 
-                    userAuth.user = dbUser
-                    userAuth.accessToken = dbUserAuth.user_id + '|' + localUserIdAndToken[1];
-                    userAuth.auth = true;
+
+                    localStorage.setItem('user',JSON.stringify(localUser));
+                    localStorage.setItem('accessToken',JSON.stringify(accessToken.value));
+                    localStorage.setItem('totalTodos',JSON.stringify(totalTodos.value));
+                    localStorage.setItem('auth',JSON.stringify(auth.value));
                 }
             });
         }
-    }
 
-    localStorage.setItem('user',JSON.stringify(userAuth));
+    }else{
+        localStorage.setItem('user',JSON.stringify(""));
+        localStorage.setItem('accessToken',JSON.stringify(""));
+        localStorage.setItem('totalTodos',JSON.stringify(0));
+        localStorage.setItem('auth',JSON.stringify(false));
+    }
 
     const app = createApp(App)
         .use(router)

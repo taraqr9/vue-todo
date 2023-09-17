@@ -2,7 +2,7 @@
 import {ref, reactive, onMounted, onBeforeMount} from "vue";
 import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 
 const baseUrl = "http://localhost:3001";
 const statuses = reactive([]);
@@ -22,11 +22,11 @@ const todo = ref({
 
 async function create() {
   const currentDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
-  todo.value.user_id = stateUser.user.user.id;
+  todo.value.user_id = stateUser.user.id;
   todo.value.created_at = currentDateTime;
   todo.value.updated_at = currentDateTime;
 
-
+  stateUser.stateUpdate();
   if(await stateUser.checkUserAndToken() === true){
     await fetch(`${baseUrl}/todos`, {
       method: "POST",
@@ -35,9 +35,8 @@ async function create() {
       },
       body: JSON.stringify(todo.value),
     }).then(() => {
-      stateUser.user.totalTodos += 1;
-
-      localStorage.setItem('user', JSON.stringify(stateUser.user));
+      stateUser.totalTodos += 1;
+      localStorage.setItem('totalTodos', JSON.stringify(stateUser.totalTodos));
     });
 
     toast.success("Todo created successfully!");
