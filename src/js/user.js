@@ -111,34 +111,29 @@ export const useUserStore = defineStore('id', to => {
 
     async function checkUserAndToken() {
         await stateUpdate();
+
+        const pipeMatches = accessToken.value.match(/\|/g);
         const userIdAndToken = accessToken.value.split('|');
+        const currentTime = Date.now();
 
-        try {
+        // check how many pipe symbol exist and token length
+        if (pipeMatches && pipeMatches.length === 1 && userIdAndToken[1].length === 12) {
             const getUserResponse = await axios.get(`http://localhost:3001/users/${user.value.id}`);
-
+            // if we have the user
             if (getUserResponse) {
                 const getTokenResponse = await axios.get(`http://localhost:3001/tokens?user_id=${getUserResponse.data.id}&token=${userIdAndToken[1]}`);
-
-                if(getTokenResponse.data.length === 0){
-                    clearLocalData();
-                    toast.error('Something went wrong, please login again!');
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 1000);
-
-                    return false;
+                // checking token exist and have validation
+                if (getTokenResponse.data.length !== 0 && currentTime<getTokenResponse.data[0].validation_till) {
+                    return true;
                 }
-                return true;
             }
-        } catch (error) {
-            clearLocalData();
-            toast.error('Something went wrong, please login again!');
-            setTimeout(function () {
-                window.location.reload();
-            }, 1000);
-
-            return false;
         }
+
+        clearLocalData();
+        toast.error('Something went wrong, please login again!');
+        setTimeout(function () {
+            window.location.reload();
+        }, 1000);
         return false;
     }
 
