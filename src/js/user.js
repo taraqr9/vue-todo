@@ -13,6 +13,51 @@ export const useUserStore = defineStore('id', to => {
     const auth = ref(false);
     const totalTodos = ref(0);
 
+    async function signUp(signUp) {
+
+        const signName = signUp.name;
+        const signEmail = signUp.email;
+        const signPassword = signUp.password;
+
+        const emailExist = await axios.get(`${dbUrl}/users?email=${signUp.email}`);
+
+        if (emailExist.data.length === 0) {
+            const currentDateTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
+
+            await axios.post(`${dbUrl}/users`, {
+                name: signName,
+                email: signEmail,
+                password: signPassword,
+                created_at: currentDateTime,
+                updated_at: currentDateTime
+            })
+                .then(function (response) {
+                    user.value = response.data;
+                    axios.post(`${dbUrl}/tokens`, {
+                        user_id: user.value.id, token: generateRandomString(12), validation_till: addOneMonthToDate()
+                    }).then(function (response) {
+                        delete user.value.password;
+                        accessToken.value = user.value.id + '|' + response.data.token;
+                        auth.value = true;
+                        totalTodos.value = 0;
+
+                        storeLocalData(user.value, accessToken.value, auth.value, totalTodos.value);
+
+                        toast.success("Your account created successfully!");
+                        router.push('/index');
+                    })
+                        .catch(function (error) {
+                            return toast.error(error);
+                        });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        } else {
+            toast.error("Email already exist, Please try with different email!");
+        }
+    }
+
     async function login(email, password) {
         await axios.get(`${dbUrl}/users?email=${email}&password=${password}`)
             .then((res) => user.value = res.data[0])
@@ -20,9 +65,7 @@ export const useUserStore = defineStore('id', to => {
 
         if (user.value) {
             axios.post(`${dbUrl}/tokens`, {
-                user_id: user.value.id,
-                token: generateRandomString(12),
-                validation_till: addOneMonthToDate()
+                user_id: user.value.id, token: generateRandomString(12), validation_till: addOneMonthToDate()
             })
                 .then(function (response) {
                     delete user.value.password;
@@ -42,13 +85,9 @@ export const useUserStore = defineStore('id', to => {
                     totalTodos.value = findLength.length;
                 });
 
-            localStorage.setItem("user", JSON.stringify(user.value));
-            localStorage.setItem("accessToken", JSON.stringify(accessToken.value));
-            localStorage.setItem("auth", JSON.stringify(auth.value));
-            localStorage.setItem("totalTodos", JSON.stringify(totalTodos.value));
+            storeLocalData(user.value, accessToken.value, auth.value, totalTodos.value);
 
             toast.success("Login successfully!");
-
             await router.push({path: 'Index'});
         } else {
             toast.error("Please check your email and password");
@@ -75,18 +114,9 @@ export const useUserStore = defineStore('id', to => {
         }
     }
 
-    async function stateUpdate() {
-        user.value = JSON.parse(localStorage.getItem('user'));
-        accessToken.value = JSON.parse(localStorage.getItem('accessToken'));
-        auth.value = JSON.parse(localStorage.getItem('auth'));
-        totalTodos.value = JSON.parse(localStorage.getItem('totalTodos'));
-    }
-
-
     const generateRandomString = (length) => {
         let result = '';
-        const characters =
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         const charactersLength = characters.length;
         for (let i = 0; i < length; i++) {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -118,7 +148,7 @@ export const useUserStore = defineStore('id', to => {
 
         // check how many pipe symbol exist and token length
         if (pipeMatches && pipeMatches.length === 1 && userIdAndToken[1].length === 12) {
-            const getUserResponse = await axios.get(`http://localhost:3001/users/${user.value.id}`).catch(()=>{
+            const getUserResponse = await axios.get(`http://localhost:3001/users/${user.value.id}`).catch(() => {
                 return false
             });
 
@@ -126,7 +156,7 @@ export const useUserStore = defineStore('id', to => {
             if (getUserResponse) {
                 const getTokenResponse = await axios.get(`http://localhost:3001/tokens?user_id=${getUserResponse.data.id}&token=${userIdAndToken[1]}`);
                 // checking token exist and have validation
-                if (getTokenResponse.data.length !== 0 && currentTime<getTokenResponse.data[0].validation_till) {
+                if (getTokenResponse.data.length !== 0 && currentTime < getTokenResponse.data[0].validation_till) {
                     return true;
                 }
             }
@@ -140,6 +170,22 @@ export const useUserStore = defineStore('id', to => {
         return false;
     }
 
+    async function stateUpdate() {
+        user.value = JSON.parse(localStorage.getItem('user'));
+        accessToken.value = JSON.parse(localStorage.getItem('accessToken'));
+        auth.value = JSON.parse(localStorage.getItem('auth'));
+        totalTodos.value = JSON.parse(localStorage.getItem('totalTodos'));
+    }
+
+    function storeLocalData(user, accessToken, auth, totalTodos) {
+        localStorage.setItem('user', JSON.stringify(user));
+        localStorage.setItem('accessToken', JSON.stringify(accessToken));
+        localStorage.setItem('auth', JSON.stringify(auth));
+        localStorage.setItem('totalTodos', JSON.stringify(totalTodos));
+
+        return true;
+    }
+
     function clearLocalData() {
         localStorage.setItem('user', JSON.stringify(''));
         localStorage.setItem('accessToken', JSON.stringify(''));
@@ -149,5 +195,5 @@ export const useUserStore = defineStore('id', to => {
         return true;
     }
 
-    return {user, accessToken, auth, totalTodos, dbUrl, login, logout, stateUpdate, checkUserAndToken}
+    return {user, accessToken, auth, totalTodos, dbUrl, login, signUp, logout, stateUpdate, checkUserAndToken}
 })

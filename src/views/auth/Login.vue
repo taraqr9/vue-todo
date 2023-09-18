@@ -65,9 +65,9 @@ async function login(){
 <!--                      <a href="#" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>-->
                   </div>
                   <button type="submit" class="w-full btn btn-success">Sign in</button>
-<!--                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">-->
-<!--                      Don’t have an account yet? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign Up</a>-->
-<!--                  </p>-->
+                  <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+                    Don’t have an account yet? <RouterLink to="/signup" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign Up</RouterLink>
+                  </p>
               </form>
           </div>
       </div>

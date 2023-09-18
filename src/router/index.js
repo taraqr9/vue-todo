@@ -5,6 +5,7 @@ import TodoView from '../views/View.vue'
 import TodoEdit from '../views/Edit.vue'
 import About from '../About.vue'
 import Login from "../views/auth/Login.vue";
+import SignUp from "../views/auth/SignUp.vue";
 import Profile from "../views/auth/Profile.vue";
 import NotFound from "../views/auth/NotFound.vue";
 
@@ -15,9 +16,10 @@ const routes = [
     {path: '/todo/:id', component: TodoView},
     {path: '/todo/:id/edit', component: TodoEdit},
     {path: '/login', component: Login},
+    {path: '/signup', component: SignUp},
     {path: '/profile', component: Profile},
     {path: '/about', component: About},
-    { path: '/:pathMatch(.*)*', component: NotFound },
+    {path: '/:pathMatch(.*)*', component: NotFound},
 ]
 
 const router = createRouter({
@@ -29,13 +31,11 @@ router.beforeEach((to, from, next) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const auth = JSON.parse(localStorage.getItem('auth'));
 
-    if (!user && (auth !== true && to.path !== '/login')) {
-        next({path: '/login'});
-    }
-    else if (auth === true && to.path === '/login') {
-        next({ path: '/index'});
-    }
-    else {
+    if (!user && to.path !== '/signup' && to.path !== '/login') {
+        next({ path: '/login' });
+    } else if (auth === true && (to.path === '/login' || to.path === '/signup')) {
+        next({ path: '/index' });
+    } else {
         next();
     }
 });

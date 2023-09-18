@@ -72,11 +72,27 @@ onBeforeMount(() => {
     <main class="px-16 py-6 md:col-span-10 bg-gray-100 h-full">
       <div class="navbar bg-base-100 rounded-2xl">
         <div class="flex-1">
-          <RouterLink to="/" class="btn btn-ghost normal-case text-xl">Todo</RouterLink>
+          <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200">Todo</RouterLink>
         </div>
 
-        <div class="flex-none gap-2">
-          <RouterLink to="/" class="btn btn-success text-white">Home</RouterLink>
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+            <div class="w-10 rounded-full">
+              <img src="../assets/avatar.png" />
+            </div>
+          </label>
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <li class="justify-between">
+              <a>
+                <li>{{ stateUser.user.name}}</li>
+                <span class="badge badge-info gap-2">{{stateUser.totalTodos}}</span>
+              </a>
+              <hr>
+            </li>
+
+            <li><RouterLink to="/profile">Profile</RouterLink></li>
+            <li><a @click="stateUser.logout">Logout</a></li>
+          </ul>
         </div>
       </div>
 

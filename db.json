@@ -5,8 +5,6 @@
     {
       "id": 1,
       "name": "Donal Trump",
-      "status": "Active",
-      "auth": true,
       "password": "123",
       "email": "jatri@gmail.com",
       "created_at": "9/5/2023, 11:25:45 AM",
@@ -15,8 +13,6 @@
     {
       "id": 2,
       "name": "Donal Trump Once More",
-      "status": "Active",
-      "auth": false,
       "password": "123",
       "email": "jatrii@gmail.com",
       "created_at": "9/5/2023, 11:25:45 AM",
@@ -160,74 +156,11 @@
     },
     {
       "user_id": 1,
-      "name": "Eos dolorem ulla",
-      "status": "Hold",
-      "priority": "High",
-      "created_at": "9/14/2023, 6:09:33 PM",
-      "updated_at": "9/18/2023, 8:54:39 AM",
-      "id": 100
-    },
-    {
-      "user_id": 1,
-      "name": "Aliquip sapiente tem",
-      "status": "Hold",
-      "priority": "High",
-      "created_at": "9/14/2023, 6:09:35 PM",
-      "updated_at": "9/14/2023, 6:09:35 PM",
-      "id": 101
-    },
-    {
-      "user_id": 1,
       "name": "Totam fugiat dolori",
       "status": "In Progress",
       "priority": "Low",
       "created_at": "9/14/2023, 6:09:37 PM",
-      "updated_at": "9/14/2023, 6:09:37 PM",
-      "id": 102
-    },
-    {
-      "user_id": 1,
-      "name": "Dignissimos occaecat",
-      "status": "Hold",
-      "priority": "Medium",
-      "created_at": "9/14/2023, 6:09:38 PM",
-      "updated_at": "9/14/2023, 6:09:38 PM",
-      "id": 103
-    },
-    {
-      "user_id": 1,
-      "name": "Officiis debitis vel",
-      "status": "Completed",
-      "priority": "Medium",
-      "created_at": "9/14/2023, 6:09:40 PM",
-      "updated_at": "9/14/2023, 6:09:40 PM",
-      "id": 104
-    },
-    {
-      "user_id": 1,
-      "name": "Qui rerum omnis obca",
-      "status": "Hold",
-      "priority": "Medium",
-      "created_at": "9/14/2023, 6:09:33 PM",
-      "updated_at": "9/14/2023, 6:09:33 PM",
-      "id": 100
-    },
-    {
-      "user_id": 1,
-      "name": "Aliquip sapiente tem",
-      "status": "Hold",
-      "priority": "High",
-      "created_at": "9/14/2023, 6:09:35 PM",
-      "updated_at": "9/14/2023, 6:09:35 PM",
-      "id": 101
-    },
-    {
-      "user_id": 1,
-      "name": "Totam fugiat dolori",
-      "status": "In Progress",
-      "priority": "Low",
-      "created_at": "9/14/2023, 6:09:37 PM",
-      "updated_at": "9/14/2023, 6:09:37 PM",
+      "updated_at": "9/18/2023, 5:13:56 PM",
       "id": 102
     },
     {
@@ -547,15 +480,6 @@
     },
     {
       "user_id": 1,
-      "name": "Facere iure reprehen",
-      "status": "In Progress",
-      "priority": "Low",
-      "created_at": "9/18/2023, 8:33:14 AM",
-      "updated_at": "9/18/2023, 8:33:14 AM",
-      "id": 134
-    },
-    {
-      "user_id": 1,
       "name": "Reprehenderit ab co",
       "status": "Back Log",
       "priority": "High",
@@ -646,15 +570,6 @@
     },
     {
       "user_id": 1,
-      "name": "Enim voluptatem vol",
-      "status": "Back Log",
-      "priority": "Low",
-      "created_at": "9/18/2023, 8:51:58 AM",
-      "updated_at": "9/18/2023, 8:51:58 AM",
-      "id": 145
-    },
-    {
-      "user_id": 1,
       "name": "Magnam debitis deser",
       "status": "Completed",
       "priority": "Low",
@@ -697,6 +612,78 @@
       "created_at": "9/18/2023, 8:53:32 AM",
       "updated_at": "9/18/2023, 8:53:32 AM",
       "id": 150
+    },
+    {
+      "user_id": 1,
+      "name": "Iure veritatis magni",
+      "status": "Back Log",
+      "priority": "High",
+      "created_at": "9/18/2023, 10:33:35 AM",
+      "updated_at": "9/18/2023, 10:33:35 AM",
+      "id": 151
+    },
+    {
+      "user_id": 9,
+      "name": "Quod dolores error d",
+      "status": "Back Log",
+      "priority": "Low",
+      "created_at": "9/18/2023, 1:59:55 PM",
+      "updated_at": "9/18/2023, 1:59:55 PM",
+      "id": 152
+    },
+    {
+      "user_id": 5,
+      "name": "Obcaecati autem nihi",
+      "status": "In Progress",
+      "priority": "Medium",
+      "created_at": "9/18/2023, 3:27:42 PM",
+      "updated_at": "9/18/2023, 3:27:42 PM",
+      "id": 153
+    },
+    {
+      "user_id": 6,
+      "name": "Iste ea soluta quibu",
+      "status": "Back Log",
+      "priority": "Medium",
+      "created_at": "9/18/2023, 3:28:12 PM",
+      "updated_at": "9/18/2023, 3:28:12 PM",
+      "id": 154
+    },
+    {
+      "user_id": 7,
+      "name": "Ad doloremque dolore",
+      "status": "Completed",
+      "priority": "High",
+      "created_at": "9/18/2023, 3:28:53 PM",
+      "updated_at": "9/18/2023, 3:28:53 PM",
+      "id": 155
+    },
+    {
+      "user_id": 1,
+      "name": "Consequuntur commodo",
+      "status": "Hold",
+      "priority": "High",
+      "created_at": "9/18/2023, 5:11:46 PM",
+      "updated_at": "9/18/2023, 5:11:46 PM",
+      "id": 156
+    },
+    {
+      "user_id": 1,
+      "name": "Eos cupiditate accus",
+      "status": "Hold",
+      "priority": "High",
+      "created_at": "9/18/2023, 5:11:51 PM",
+      "updated_at": "9/18/2023, 5:11:51 PM",
+      "id": 157
+    },
+    {
+      "user_id": 1,
+      "name": "Quaerat optio corru",
+      "status": "Back Log",
+      "priority": "Low",
+      "created_at": "9/18/2023, 5:20:43 PM",
+      "updated_at": "9/18/2023, 5:20:43 PM",
+      "id": 158
     }
   ],
   "meta": {
