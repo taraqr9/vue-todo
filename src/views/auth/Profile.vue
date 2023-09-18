@@ -7,7 +7,6 @@ const stateUser = useUserStore();
 
 onBeforeMount(async () => {
   stateUser.checkUserAndToken();
-  console.log(stateUser.user);
 })
 </script>
 

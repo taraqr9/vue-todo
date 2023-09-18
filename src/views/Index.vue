@@ -1,7 +1,7 @@
 <script setup>
 import {ref, reactive, computed, onMounted, onBeforeMount} from "vue";
 import axios from "axios";
-import { createToaster } from "@meforma/vue-toaster";
+import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
 
 const stateUser = useUserStore();
@@ -20,12 +20,12 @@ const showPreviousPageButton = ref(false);
 const pageNumber = ref("1");
 const totalPage = ref("0");
 const itemsPerPage = ref("10");
-
-const blur = ref(false);
+const todoLen = ref(0);
 
 const toast = createToaster({
   /* options */
 });
+
 async function getTodos() {
   const res = await fetch(`${stateUser.dbUrl}/todos?user_id=${stateUser.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
   totalPage.value = Math.ceil(stateUser.totalTodos / itemsPerPage.value);     // total page
@@ -36,17 +36,17 @@ async function getTodos() {
   showPreviousPageButton.value = pageNumber.value > 1;
 }
 
-function nextPage(){
+function nextPage() {
   pageNumber.value++;
   getTodos();
 }
 
-function previousPage(){
+function previousPage() {
   pageNumber.value--;
   getTodos();
 }
 
-function updatePageNumber(updatePageNumber){
+function updatePageNumber(updatePageNumber) {
   pageNumber.value = updatePageNumber;
   getTodos();
 }
@@ -63,7 +63,7 @@ async function getAllStatus() {
 
 async function destroy(id) {
   if (window.confirm("You want to delete the todo?")) {
-    if(await stateUser.checkUserAndToken() === true) {
+    if (await stateUser.checkUserAndToken() === true) {
       await axios.delete(`${stateUser.dbUrl}/todos/` + id);
 
       todos.length = 0;
@@ -89,10 +89,14 @@ const filteredTodos = computed(() => {
       });
 });
 
+const filteredTodosLength = computed(() => {
+  return filteredTodos.value.length;
+})
+
 
 async function handleStatusSelection(todo, status) {
   try {
-    if(await stateUser.checkUserAndToken() === true){
+    if (await stateUser.checkUserAndToken() === true) {
       todo.updated_at = new Date().toLocaleString("en-US", {
         timeZone: "Asia/Dhaka",
       });
@@ -119,7 +123,7 @@ onMounted(() => {
   getAllPriorities();
 });
 
-onBeforeMount(async() => {
+onBeforeMount(async () => {
   stateUser.stateUpdate();
 })
 </script>
@@ -130,7 +134,7 @@ onBeforeMount(async() => {
   <div class="md:col-span-2 px-3 bg-gray-100 h-screen">
     <div class="grid md:grid-cols-12 rounded h-full">
       <div
-        class="md:col-span-2 bg-teal-50"
+          class="md:col-span-2 bg-teal-50 flex justify-center items-center"
       >
         <div class="grid mt-20 items-start justify-center">
           <div class="badge badge-success p-4 mb-4">
@@ -138,22 +142,22 @@ onBeforeMount(async() => {
           </div>
 
           <div
-            class="flex items-center mb-4"
-            v-for="status in statuses"
-            :key="status.id"
+              class="flex items-center mb-4"
+              v-for="status in statuses"
+              :key="status.id"
           >
             <input
-              v-model="filterStatus"
-              :id="status.id"
-              type="checkbox"
-              :value="status.name"
-              class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                v-model="filterStatus"
+                :id="status.id"
+                type="checkbox"
+                :value="status.name"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
             />
 
             <label
-              :for="status.id"
-              class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-              >{{ status.name }}</label
+                :for="status.id"
+                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >{{ status.name }}</label
             >
           </div>
         </div>
@@ -162,19 +166,45 @@ onBeforeMount(async() => {
       <main class="px-16 py-6 md:col-span-10 bg-gray-100 h-full">
 
         <div class="navbar bg-base-100 rounded">
-          <div class="flex-1">
-            <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200">Todo</RouterLink>
+          <div class="flex-1 gap-2">
+            <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200 ">Home</RouterLink>
+            <RouterLink to="/todo/create" class="btn btn-success text-white">Create</RouterLink>
           </div>
 
           <div class="flex-1 border-accent/25 rounded">
             <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ stateUser.totalTodos }}</a>
           </div>
 
+          <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full">
+                <img src="../assets/avatar.png"/>
+              </div>
+            </label>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li class="justify-between">
+                <a>
+                  <li>{{ stateUser.user.name }}</li>
+                  <span class="badge badge-info gap-2">{{ stateUser.totalTodos }}</span>
+                </a>
+                <hr>
+              </li>
+
+              <li>
+                <RouterLink to="/profile">Profile</RouterLink>
+              </li>
+              <li><a @click="stateUser.logout">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="navbar bg-base-100 h-10 rounded justify-end">
+
           <div class="flex-none gap-2">
-            <div class="form-control">
+            <div class="form-control align-right">
               <select
-                v-model="priority"
-                class="select select-bordered w-full max-w-xs"
+                  v-model="priority"
+                  class="input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Select Priority</option>
                 <option v-for="priority in priorities" :key="priority.id">
@@ -185,8 +215,8 @@ onBeforeMount(async() => {
 
             <div class="form-control">
               <select
-                v-model="sort"
-                class="select select-bordered w-full max-w-xs"
+                  v-model="sort"
+                  class="input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Sort By</option>
                 <option value="created-at-asc">Created At (ASC)</option>
@@ -196,116 +226,98 @@ onBeforeMount(async() => {
 
             <div class="form-control">
               <input
-                v-model="search"
-                type="text"
-                placeholder="Search"
-                class="input input-bordered w-24 md:w-auto"
+                  v-model="search"
+                  type="text"
+                  placeholder="Search"
+                  class="input input-bordered w-24 h-8 md:w-auto"
               />
             </div>
-
-            <RouterLink to="/todo/create" class="btn btn-success text-white" >Create</RouterLink>
-
-            <div class="dropdown dropdown-end">
-              <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-                <div class="w-10 rounded-full">
-                  <img src="../assets/avatar.png" />
-                </div>
-              </label>
-              <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-                <li class="justify-between">
-                  <a>
-                    <li>{{ stateUser.user.name}}</li>
-                    <span class="badge badge-info gap-2">{{stateUser.totalTodos}}</span>
-                  </a>
-                  <hr>
-                </li>
-
-                <li><RouterLink to="/profile">Profile</RouterLink></li>
-                <li><a @click="stateUser.logout">Logout</a></li>
-              </ul>
+            <div class="input input-bordered w-0 h-8 md:w-auto">
+              <a class="normal-case text-xl">Filtered Count: {{ filteredTodosLength }}</a>
             </div>
           </div>
         </div>
 
+        <hr>
         <div class="shadow-md sm:rounded-lg">
           <table
-            class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+              class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
           >
             <thead
-              class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
             >
-              <tr>
-                <th scope="col" class="px-6 py-3">ID</th>
-                <th scope="col" class="px-6 py-3">Name</th>
-                <th scope="col" class="px-6 py-3">Status</th>
-                <th scope="col" class="px-6 py-3">Created At</th>
-                <th scope="col" class="px-6 py-3 text-center">Action</th>
-              </tr>
+            <tr>
+              <th scope="col" class="px-6 py-3">ID</th>
+              <th scope="col" class="px-6 py-3">Name</th>
+              <th scope="col" class="px-6 py-3">Status</th>
+              <th scope="col" class="px-6 py-3">Created At</th>
+              <th scope="col" class="px-6 py-3 text-center">Action</th>
+            </tr>
             </thead>
             <tbody>
-              <tr
+            <tr
                 v-for="todo in filteredTodos"
                 :key="todo.id"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                <td class="px-6 py-4">
-                  {{ todo.id }}
-                </td>
-                <th
+            >
+              <td class="px-6 py-4">
+                {{ todo.id }}
+              </td>
+              <th
                   scope="row"
                   class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white max-w-md truncate"
-                >
-                  {{ todo.name }}
-                </th>
-                <td class="px-6 py-4">
+              >
+                {{ todo.name }}
+              </th>
+              <td class="px-6 py-4">
                   <span
-                    class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                    >{{ todo.status }}</span
+                      class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                  >{{ todo.status }}</span
                   >
-                </td>
-                <td class="px-6 py-4">{{ todo.created_at }}</td>
-                <td class="px-6 py-4">
-                  <RouterLink
+              </td>
+              <td class="px-6 py-4">{{ todo.created_at }}</td>
+              <td class="px-6 py-4">
+                <RouterLink
                     :to="'/todo/' + todo.id"
                     type="button"
                     class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
-                  >
-                    View
-                  </RouterLink>
+                >
+                  View
+                </RouterLink>
 
-                  <div
+                <div
                     class="dropdown text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-                  >
-                    <label class="cursor-pointer" tabindex="0">Status</label>
-                    <ul
+                >
+                  <label class="cursor-pointer" tabindex="0">Status</label>
+                  <ul
                       tabindex="0"
                       class="dropdown-content z-[1] menu shadow bg-base-content rounded-box w-52"
-                    >
-                      <li v-for="status in statuses" :key="status.id">
-                        <a @click="handleStatusSelection(todo, status)">{{
+                  >
+                    <li v-for="status in statuses" :key="status.id">
+                      <a @click="handleStatusSelection(todo, status)">{{
                           status.name
                         }}</a>
-                      </li>
-                    </ul>
-                  </div>
+                    </li>
+                  </ul>
+                </div>
 
-                  <RouterLink
+                <RouterLink
                     :to="'/todo/' + todo.id + '/edit'"
                     type="button"
                     class="text-white bg-yellow-500 hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-yellow-600 dark:hover:bg-yellow-500 dark:focus:ring-yellow-900"
-                  >
-                    Edit
-                  </RouterLink>
+                >
+                  Edit
+                </RouterLink>
 
-                  <button
+                <button
                     @click="destroy(todo.id)"
                     type="button"
                     class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs px-3 py-1.5 text-center mr-1 mb-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -326,14 +338,16 @@ onBeforeMount(async() => {
                     fill="none"
                     viewBox="0 0 6 10"
                 >
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M5 1 1 5l4 4"/>
                 </svg>
               </a>
             </li>
             <li v-for="(pageNum, index) in totalPage" :key="index" @click="updatePageNumber(pageNum)">
               <a
                   href="#"
-                  class="flex items-center justify-center px-3 h-8 leading-tight" v-if="pageNum === index+1 ? 'btn-active' : '' "
+                  class="flex items-center justify-center px-3 h-8 leading-tight"
+                  v-if="pageNum === index+1 ? 'btn-active' : '' "
                   :class="{
                     'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': pageNumber === pageNum,
                     'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': pageNumber !== pageNum
@@ -357,7 +371,8 @@ onBeforeMount(async() => {
                     fill="none"
                     viewBox="0 0 6 10"
                 >
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="m1 9 4-4-4-4"/>
                 </svg>
               </a>
             </li>

@@ -1,5 +1,17 @@
 {
   "tokens": [
+    {
+      "user_id": 1,
+      "token": "42NW6uS0QhWE",
+      "validation_till": 1697630254492,
+      "id": 1
+    },
+    {
+      "user_id": 1,
+      "token": "ghZnJVGJGB6W",
+      "validation_till": 1697631528832,
+      "id": 2
+    }
   ],
   "users": [
     {
@@ -17,6 +29,14 @@
       "email": "jatrii@gmail.com",
       "created_at": "9/5/2023, 11:25:45 AM",
       "updated_at": "9/4/2023, 11:26:50 AM"
+    },
+    {
+      "name": "ovi",
+      "email": "ovi@gmail.com",
+      "password": "123",
+      "created_at": "9/18/2023, 5:51:17 PM",
+      "updated_at": "9/18/2023, 5:51:17 PM",
+      "id": 3
     }
   ],
   "todos": [
@@ -153,15 +173,6 @@
       "created_at": "9/14/2023, 6:07:27 PM",
       "updated_at": "9/14/2023, 6:07:27 PM",
       "id": 98
-    },
-    {
-      "user_id": 1,
-      "name": "Totam fugiat dolori",
-      "status": "In Progress",
-      "priority": "Low",
-      "created_at": "9/14/2023, 6:09:37 PM",
-      "updated_at": "9/18/2023, 5:13:56 PM",
-      "id": 102
     },
     {
       "user_id": 1,
@@ -684,6 +695,15 @@
       "created_at": "9/18/2023, 5:20:43 PM",
       "updated_at": "9/18/2023, 5:20:43 PM",
       "id": 158
+    },
+    {
+      "user_id": 1,
+      "name": "Est nostrum officii",
+      "status": "Completed",
+      "priority": "Low",
+      "created_at": "9/18/2023, 6:19:30 PM",
+      "updated_at": "9/18/2023, 6:19:30 PM",
+      "id": 159
     }
   ],
   "meta": {
