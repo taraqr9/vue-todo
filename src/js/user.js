@@ -118,7 +118,10 @@ export const useUserStore = defineStore('id', to => {
 
         // check how many pipe symbol exist and token length
         if (pipeMatches && pipeMatches.length === 1 && userIdAndToken[1].length === 12) {
-            const getUserResponse = await axios.get(`http://localhost:3001/users/${user.value.id}`);
+            const getUserResponse = await axios.get(`http://localhost:3001/users/${user.value.id}`).catch(()=>{
+                return false
+            });
+
             // if we have the user
             if (getUserResponse) {
                 const getTokenResponse = await axios.get(`http://localhost:3001/tokens?user_id=${getUserResponse.data.id}&token=${userIdAndToken[1]}`);
