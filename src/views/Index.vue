@@ -68,7 +68,7 @@ async function destroy(id) {
 
       todos.length = 0;
       stateUser.totalTodos -= 1;
-      localStorage.setItem('user', JSON.stringify(stateUser.user));
+      localStorage.setItem('totalTodos', JSON.stringify(stateUser.totalTodos));
 
       await getTodos();
       toast.success('Task Deleted successfully!');
@@ -343,7 +343,7 @@ onBeforeMount(async () => {
                 </svg>
               </a>
             </li>
-            <li v-for="(pageNum, index) in totalPage" :key="index" @click="updatePageNumber(pageNum)">
+            <li v-for="(pageNum, index) in totalPage" :key="index" @click="updatePageNumber(pageNum)" v-if="stateUser.totalTodos>10">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 leading-tight"

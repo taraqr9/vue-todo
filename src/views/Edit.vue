@@ -62,32 +62,32 @@ onMounted(() => {
     <div class="md:col-span-2 bg-teal-50 px-3"></div>
 
     <main class="px-16 py-6 md:col-span-10 bg-gray-100">
-      <div class="navbar bg-base-100 rounded-2xl">
-        <div class="flex-1">
-          <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200">Todo</RouterLink>
+      <div class="navbar bg-base-100 rounded">
+        <div class="flex-1 gap-2">
+          <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200 ">Home</RouterLink>
+          <RouterLink to="/todo/create" class="btn btn-success text-white">Create</RouterLink>
         </div>
 
-        <div class="flex-none gap-2">
-          <RouterLink to="/todo/create" class="btn btn-success text-white">Create</RouterLink>
-          <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn btn-ghost btn-circle avatar">
-              <div class="w-10 rounded-full">
-                <img src="../assets/avatar.png" />
-              </div>
-            </label>
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li class="justify-between">
-                <a>
-                  <li>{{ stateUser.user.name}}</li>
-                  <span class="badge badge-info gap-2">{{stateUser.totalTodos}}</span>
-                </a>
-                <hr>
-              </li>
+        <div class="dropdown dropdown-end">
+          <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+            <div class="w-10 rounded-full">
+              <img src="../assets/avatar.png"/>
+            </div>
+          </label>
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <li class="justify-between">
+              <a>
+                <li>{{ stateUser.user.name }}</li>
+                <span class="badge badge-info gap-2">{{ stateUser.totalTodos }}</span>
+              </a>
+              <hr>
+            </li>
 
-              <li><RouterLink to="/profile">Profile</RouterLink></li>
-              <li><a @click="stateUser.logout">Logout</a></li>
-            </ul>
-          </div>
+            <li>
+              <RouterLink to="/profile">Profile</RouterLink>
+            </li>
+            <li><a @click="stateUser.logout">Logout</a></li>
+          </ul>
         </div>
       </div>
 
