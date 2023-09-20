@@ -3,14 +3,13 @@ import {ref, reactive} from "vue";
 import {useUserStore} from "../../js/user.js";
 
 const stateUser = useUserStore();
-
+const user = reactive({});
 const signInfo = ref({
   name: "",
   email: "",
   password: ""
 });
 
-const user = reactive({});
 
 async function signUp() {
   await stateUser.signUp(signInfo.value).then(() =>

@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, onMounted, onBeforeMount} from "vue";
+import {reactive, onMounted} from "vue";
 import { useRoute } from "vue-router";
 import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";

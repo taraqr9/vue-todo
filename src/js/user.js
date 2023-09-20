@@ -97,7 +97,7 @@ export const useUserStore = defineStore('id', to => {
     async function logout() {
         const accessToken = JSON.parse(localStorage.getItem('accessToken'));
         if (accessToken) {
-            const userIdAndToken = splitStringByPipe(accessToken);
+            const userIdAndToken = accessToken.split('|');
             const token = await (await axios.get(`${dbUrl}/tokens?user_id=${userIdAndToken[0]}&token=${userIdAndToken[1]}`)).data[0];
 
             if (token) {
@@ -133,10 +133,6 @@ export const useUserStore = defineStore('id', to => {
         }
 
         return newDate.getTime();
-    }
-
-    function splitStringByPipe(inputString) {
-        return inputString.split('|');
     }
 
     async function checkUserAndToken() {

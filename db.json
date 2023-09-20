@@ -8,8 +8,8 @@
     },
     {
       "user_id": 1,
-      "token": "NTaDE2Vg03zP",
-      "validation_till": 1697788109680,
+      "token": "MHlKPxEjTRri",
+      "validation_till": 1697792516243,
       "id": 2
     }
   ],
@@ -21,6 +21,14 @@
       "email": "jatri@gmail.com",
       "created_at": "9/5/2023, 11:25:45 AM",
       "updated_at": "9/4/2023, 11:26:50 AM"
+    },
+    {
+      "name": "ovi",
+      "email": "ovi@gmail.com",
+      "password": "123",
+      "created_at": "9/20/2023, 2:50:06 PM",
+      "updated_at": "9/20/2023, 2:50:06 PM",
+      "id": 2
     }
   ],
   "todos": [
@@ -106,11 +114,11 @@
     },
     {
       "user_id": 1,
-      "name": "Eligendi omnis imped",
-      "status": "Back Log",
-      "priority": "High",
+      "name": "Eligendi omnis imped one",
+      "status": "Completed",
+      "priority": "Medium",
       "created_at": "9/20/2023, 1:56:04 PM",
-      "updated_at": "9/20/2023, 1:56:04 PM",
+      "updated_at": "9/20/2023, 2:49:35 PM",
       "id": 90
     },
     {
@@ -125,20 +133,29 @@
     {
       "user_id": 1,
       "name": "Dolore anim eveniet",
-      "status": "Hold",
+      "status": "Completed",
       "priority": "High",
       "created_at": "9/20/2023, 2:46:18 PM",
-      "updated_at": "9/20/2023, 2:46:18 PM",
+      "updated_at": "9/20/2023, 2:49:09 PM",
       "id": 94
     },
     {
       "user_id": 1,
       "name": "Et sint modi quod bl",
-      "status": "Completed",
+      "status": "In Progress",
       "priority": "Low",
       "created_at": "9/20/2023, 2:46:24 PM",
-      "updated_at": "9/20/2023, 2:46:24 PM",
+      "updated_at": "9/20/2023, 2:49:06 PM",
       "id": 95
+    },
+    {
+      "user_id": 1,
+      "name": "Et beatae aut dolore",
+      "status": "Back Log",
+      "priority": "Medium",
+      "created_at": "9/20/2023, 2:49:16 PM",
+      "updated_at": "9/20/2023, 2:49:16 PM",
+      "id": 96
     }
   ],
   "meta": {
