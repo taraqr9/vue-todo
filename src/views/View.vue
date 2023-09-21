@@ -1,48 +1,14 @@
 <script setup>
-import { useRoute } from "vue-router";
-import {reactive, onMounted, onBeforeMount} from "vue";
-import { createToaster } from "@meforma/vue-toaster";
+import {onMounted, onBeforeMount} from "vue";
 import {useUserStore} from "../js/user.js";
+import {useTodoStore} from "../js/todo.js";
 
-const route = useRoute();
-const id = route.params.id;
-const todo = reactive({});
-const toast = createToaster({});
+
 const stateUser = useUserStore();
-
-async function getTodoDetails() {
-  try {
-    const res = await fetch(`${stateUser.dbUrl}/todos/${id}`);
-    Object.assign(todo, await res.json());
-  } catch (error) {
-    console.error("Error fetching todo:", error);
-  }
-}
-
-async function updateStatus(){
-  try {
-    if(await stateUser.checkUserAndToken() === true) {
-      todo.updated_at = new Date().toLocaleString("en-US", {
-        timeZone: "Asia/Dhaka",
-      });
-      todo.status = 'Completed';
-      await fetch(`${stateUser.dbUrl}/todos/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(todo),
-      });
-
-      toast.success("Status updated successfully");
-    }
-  } catch (error) {
-    toast.error("The error is: " + error);
-  }
-}
+const stateTodo = useTodoStore();
 
 onMounted(() => {
-  getTodoDetails();
+  stateTodo.getTodoDetails();
 });
 
 onBeforeMount(() => {
@@ -97,7 +63,7 @@ onBeforeMount(() => {
                   <!-- row 1 -->
                   <tr>
                     <th>Name</th>
-                    <td class="w-96">{{ todo.name }}</td>
+                    <td class="w-96">{{ stateTodo.todo.name }}</td>
                   </tr>
                   <!-- row 2 -->
                   <tr class="hover">
@@ -105,7 +71,7 @@ onBeforeMount(() => {
                     <td>
                       <span
                         class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                        >{{ todo.status }}</span
+                        >{{ stateTodo.todo.status }}</span
                       >
                     </td>
                   </tr>
@@ -115,17 +81,17 @@ onBeforeMount(() => {
                     <td>
                       <span
                         class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
-                        >{{ todo.priority }}</span
+                        >{{ stateTodo.todo.priority }}</span
                       >
                     </td>
                   </tr>
                   <tr>
                     <th>Created At</th>
-                    <td>{{ todo.created_at }}</td>
+                    <td>{{ stateTodo.todo.created_at }}</td>
                   </tr>
                   <tr>
                     <th>Updated At</th>
-                    <td>{{ todo.updated_at }}</td>
+                    <td>{{ stateTodo.todo.updated_at }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -134,11 +100,11 @@ onBeforeMount(() => {
               class="card-actions flex justify-end absolute bottom-0 right-0 p-4"
             >
               <div class="flex-none gap-2">
-                <RouterLink :to="'/todo/'+todo.id+'/edit'" class="btn btn-primary text-white">Edit</RouterLink>
+                <RouterLink :to="'/todo/'+stateTodo.todo.id+'/edit'" class="btn btn-primary text-white">Edit</RouterLink>
               </div>
 
               <div class="flex-none gap-2">
-                <a @click="updateStatus()" class="btn btn-success text-white">Mark as complete</a>
+                <a @click="stateTodo.updateStatusMarkAsComplete" class="btn btn-success text-white">Mark as complete</a>
               </div>
             </div>
           </div>

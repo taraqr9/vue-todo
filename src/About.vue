@@ -1,6 +1,4 @@
-
-
-// <script setup>
+<script setup>
 import {ref, reactive, computed, onMounted} from "vue";
 import {useTodoStore} from "./js/todo.js";
 
@@ -10,7 +8,7 @@ onMounted(() => {
   console.log("calling me : ", stateTodo.foo);
 })
 
-// </script>
+</script>
 
 <template>
   <h1>Hello {{stateTodo.test}}</h1>

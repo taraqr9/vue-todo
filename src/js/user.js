@@ -6,7 +6,7 @@ import router from '../router/index.js'
 
 const toast = createToaster({});
 
-export const useUserStore = defineStore('id', to => {
+export const useUserStore = defineStore('user', to => {
     const dbUrl = "http://localhost:3001";
     const user = ref({});
     const accessToken = ref();
