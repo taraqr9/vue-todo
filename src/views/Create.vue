@@ -1,15 +1,13 @@
 <script setup>
-import {ref, reactive, onMounted, onBeforeMount} from "vue";
-import {createToaster} from "@meforma/vue-toaster";
+import {ref, onMounted, onBeforeMount} from "vue";
 import {useUserStore} from "../js/user.js";
+import {useTodoStore} from "../js/todo.js";
 
-const statuses = reactive([]);
-const priorities = reactive([]);
-const toast = createToaster({});
 const stateUser = useUserStore();
+const stateTodo = useTodoStore();
 
 const todo = ref({
-  user_id: "",
+  user_id: 1,
   name: "",
   status: "",
   priority: "",
@@ -17,46 +15,13 @@ const todo = ref({
   updated_at: "",
 });
 
-async function create() {
-  const currentDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
-  todo.value.user_id = stateUser.user.id;
-  todo.value.created_at = currentDateTime;
-  todo.value.updated_at = currentDateTime;
-
-  if(await stateUser.checkUserAndToken() === true){
-    await fetch(`${stateUser.dbUrl}/todos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(todo.value),
-    }).then(() => {
-      stateUser.totalTodos += 1;
-      localStorage.setItem('totalTodos', JSON.stringify(stateUser.totalTodos));
-    });
-
-    toast.success("Todo created successfully!");
-
-    todo.value.name = "";
-    todo.value.status = "";
-    todo.value.priority = "";
-    todo.value.created_at = "";
-  }
-}
-
-async function getAllStatus() {
-  const res = await fetch(`${stateUser.dbUrl}/statuses`);
-  Object.assign(statuses, await res.json());
-}
-
-async function getAllPriorities() {
-  const res = await fetch(`${stateUser.dbUrl}/priorities`);
-  Object.assign(priorities, await res.json());
+function create(){
+  stateTodo.create(todo);
 }
 
 onMounted(() => {
-  getAllStatus();
-  getAllPriorities();
+  stateTodo.getAllStatus();
+  stateTodo.getAllPriorities();
 });
 
 onBeforeMount(() => {
@@ -118,7 +83,7 @@ onBeforeMount(() => {
               >
                 <option value="" disabled selected>Select Status</option>
                 <option
-                  v-for="status in statuses"
+                  v-for="status in stateTodo.statuses"
                   :key="status.id"
                   :value="status.name"
                 >
@@ -134,7 +99,7 @@ onBeforeMount(() => {
               >
                 <option value="" disabled selected>Select Priority</option>
                 <option
-                  v-for="priority in priorities"
+                  v-for="priority in stateTodo.priorities"
                   :key="priority.id"
                   :value="priority.name"
                 >
