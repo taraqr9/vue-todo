@@ -1,35 +1,6 @@
 {
   "tokens": [
-    {
-      "user_id": 1,
-      "token": "42NW6uS0QhWE",
-      "validation_till": 1697630254492,
-      "id": 1
-    },
-    {
-      "user_id": 1,
-      "token": "MHlKPxEjTRri",
-      "validation_till": 1697792516243,
-      "id": 2
-    },
-    {
-      "user_id": 1,
-      "token": "KknLgfJ3YhoI",
-      "validation_till": 1697875948832,
-      "id": 3
-    },
-    {
-      "user_id": 1,
-      "token": "AXASSnnvjizV",
-      "validation_till": 1697881937103,
-      "id": 4
-    },
-    {
-      "user_id": 3,
-      "token": "tBP34IuDgNNC",
-      "validation_till": 1697886570603,
-      "id": 5
-    }
+
   ],
   "users": [
     {
@@ -131,42 +102,6 @@
     },
     {
       "user_id": 1,
-      "name": "Consequatur omnis i",
-      "status": "Completed",
-      "priority": "High",
-      "created_at": "9/20/2023, 1:55:58 PM",
-      "updated_at": "9/21/2023, 4:44:55 PM",
-      "id": 89
-    },
-    {
-      "user_id": 1,
-      "name": "Eligendi omnis imped one",
-      "status": "Completed",
-      "priority": "Medium",
-      "created_at": "9/20/2023, 1:56:04 PM",
-      "updated_at": "9/20/2023, 2:49:35 PM",
-      "id": 90
-    },
-    {
-      "user_id": 1,
-      "name": "Accusantium sit dol",
-      "status": "Hold",
-      "priority": "High",
-      "created_at": "9/20/2023, 2:43:31 PM",
-      "updated_at": "9/21/2023, 5:08:46 PM",
-      "id": 93
-    },
-    {
-      "user_id": 1,
-      "name": "Dolore anim eveniet",
-      "status": "Completed",
-      "priority": "High",
-      "created_at": "9/20/2023, 2:46:18 PM",
-      "updated_at": "9/20/2023, 2:49:09 PM",
-      "id": 94
-    },
-    {
-      "user_id": 1,
       "name": "Et sint modi quod bl",
       "status": "In Progress",
       "priority": "Low",
@@ -176,66 +111,12 @@
     },
     {
       "user_id": 1,
-      "name": "Et beatae aut dolore",
-      "status": "Back Log",
-      "priority": "Medium",
-      "created_at": "9/20/2023, 2:49:16 PM",
-      "updated_at": "9/20/2023, 2:49:16 PM",
-      "id": 96
-    },
-    {
-      "user_id": 1,
-      "name": "Cupiditate amet vel",
-      "status": "Completed",
-      "priority": "High",
-      "created_at": "9/21/2023, 2:12:32 PM",
-      "updated_at": "9/21/2023, 2:12:32 PM",
-      "id": 97
-    },
-    {
-      "user_id": 1,
-      "name": "Quia ipsum architect",
-      "status": "Completed",
-      "priority": "High",
-      "created_at": "9/21/2023, 4:41:21 PM",
-      "updated_at": "9/21/2023, 4:41:21 PM",
-      "id": 102
-    },
-    {
-      "user_id": 1,
-      "name": "Possimus molestias 123123123123123123",
-      "status": "Back Log",
-      "priority": "Low",
-      "created_at": "9/21/2023, 4:41:58 PM",
-      "updated_at": "9/21/2023, 4:41:58 PM",
-      "id": 103
-    },
-    {
-      "user_id": 1,
       "name": "Aut rerum quidem inv",
       "status": "In Progress",
       "priority": "High",
       "created_at": "9/21/2023, 4:43:41 PM",
       "updated_at": "9/21/2023, 4:43:41 PM",
       "id": 104
-    },
-    {
-      "user_id": 1,
-      "name": "Repudiandae sint op",
-      "status": "Hold",
-      "priority": "High",
-      "created_at": "9/21/2023, 4:43:46 PM",
-      "updated_at": "9/21/2023, 4:43:46 PM",
-      "id": 105
-    },
-    {
-      "user_id": 1,
-      "name": "Numquam dolorem dolo",
-      "status": "Back Log",
-      "priority": "Medium",
-      "created_at": "9/21/2023, 4:45:27 PM",
-      "updated_at": "9/21/2023, 4:45:27 PM",
-      "id": 106
     },
     {
       "user_id": 1,
@@ -272,6 +153,15 @@
       "created_at": "9/21/2023, 5:09:13 PM",
       "updated_at": "9/21/2023, 5:12:12 PM",
       "id": 110
+    },
+    {
+      "user_id": 1,
+      "name": "In quia exercitation",
+      "status": "Back Log",
+      "priority": "Medium",
+      "created_at": "9/21/2023, 5:39:36 PM",
+      "updated_at": "9/21/2023, 5:39:36 PM",
+      "id": 111
     }
   ],
   "meta": {

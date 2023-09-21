@@ -1,122 +1,15 @@
 <script setup>
-import {ref, reactive, computed, onMounted, onBeforeMount} from "vue";
-import axios from "axios";
-import {createToaster} from "@meforma/vue-toaster";
+import {onMounted, onBeforeMount} from "vue";
 import {useUserStore} from "../js/user.js";
+import {useTodoStore} from "../js/todo.js";
 
 const stateUser = useUserStore();
-
-const todos = reactive([]);
-const statuses = reactive([]);
-const priorities = reactive([]);
-const priority = ref("");
-const filterStatus = ref([]);
-
-const search = ref("");
-const sort = ref("");
-
-const showNextPageButton = ref(true);
-const showPreviousPageButton = ref(false);
-const pageNumber = ref("1");
-const totalPage = ref("0");
-const itemsPerPage = ref("10");
-const toast = createToaster({});
-
-async function getTodos() {
-  const res = await fetch(`${stateUser.dbUrl}/todos?user_id=${stateUser.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
-  totalPage.value = Math.ceil(stateUser.totalTodos / itemsPerPage.value);     // total page
-  todos.length = 0;
-  todos.push(...await res.json());
-
-  showNextPageButton.value = todos.length === 10;
-  showPreviousPageButton.value = pageNumber.value > 1;
-}
-
-function nextPage() {
-  pageNumber.value++;
-  getTodos();
-}
-
-function previousPage() {
-  pageNumber.value--;
-  getTodos();
-}
-
-function updatePageNumber(updatePageNumber) {
-  pageNumber.value = updatePageNumber;
-  getTodos();
-}
-
-async function getAllPriorities() {
-  const res = await fetch(`${stateUser.dbUrl}/priorities`);
-  Object.assign(priorities, await res.json());
-}
-
-async function getAllStatus() {
-  const res = await fetch(`${stateUser.dbUrl}/statuses`);
-  Object.assign(statuses, await res.json());
-}
-
-async function destroy(id) {
-  if (window.confirm("You want to delete the todo?")) {
-    if (await stateUser.checkUserAndToken() === true) {
-      await axios.delete(`${stateUser.dbUrl}/todos/` + id);
-
-      todos.length = 0;
-      stateUser.totalTodos -= 1;
-      localStorage.setItem('totalTodos', JSON.stringify(stateUser.totalTodos));
-
-      await getTodos();
-      toast.success('Task Deleted successfully!');
-    }
-  }
-}
-
-const filteredTodos = computed(() => {
-  return todos
-      .filter((todo) => !search.value || todo.name.toLowerCase().includes(search.value.toLowerCase()))
-      .filter((todo) => !priority.value || priority.value === "Select priority" || todo.priority === priority.value)
-      .filter((todo) => filterStatus.value.length === 0 || filterStatus.value.includes(todo.status))
-      .sort((a, b) => {
-        if (sort.value === "Sort By") {
-          return 0;
-        }
-        return sort.value === "created-at-asc" ? new Date(a.created_at) - new Date(b.created_at) : new Date(b.created_at) - new Date(a.created_at);
-      });
-});
-
-const filteredTodosLength = computed(() => {
-  return filteredTodos.value.length;
-})
-
-
-async function handleStatusSelection(todo, status) {
-  try {
-    if (await stateUser.checkUserAndToken() === true) {
-      todo.updated_at = new Date().toLocaleString("en-US", {
-        timeZone: "Asia/Dhaka",
-      });
-      todo.status = status.name;
-
-      await fetch(`${stateUser.dbUrl}/todos/${todo.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(todo),
-      });
-      toast.success("Status updated successfully");
-    }
-
-  } catch (error) {
-    toast.error("The error is: " + error);
-  }
-}
+const stateTodo = useTodoStore();
 
 onMounted(() => {
-  getTodos();
-  getAllStatus();
-  getAllPriorities();
+  stateTodo.getTodos();
+  stateTodo.getAllStatus();
+  stateTodo.getAllPriorities();
 });
 
 onBeforeMount(async () => {
@@ -139,11 +32,11 @@ onBeforeMount(async () => {
 
           <div
               class="flex items-center mb-4"
-              v-for="status in statuses"
+              v-for="status in stateTodo.statuses"
               :key="status.id"
           >
             <input
-                v-model="filterStatus"
+                v-model="stateTodo.filterStatus"
                 :id="status.id"
                 type="checkbox"
                 :value="status.name"
@@ -199,11 +92,11 @@ onBeforeMount(async () => {
           <div class="flex-none gap-2">
             <div class="form-control align-right">
               <select
-                  v-model="priority"
+                  v-model="stateTodo.priority"
                   class="input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Select Priority</option>
-                <option v-for="priority in priorities" :key="priority.id">
+                <option v-for="priority in stateTodo.priorities" :key="priority.id">
                   {{ priority.name }}
                 </option>
               </select>
@@ -211,7 +104,7 @@ onBeforeMount(async () => {
 
             <div class="form-control">
               <select
-                  v-model="sort"
+                  v-model="stateTodo.sort"
                   class="input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Sort By</option>
@@ -222,14 +115,14 @@ onBeforeMount(async () => {
 
             <div class="form-control">
               <input
-                  v-model="search"
+                  v-model="stateTodo.search"
                   type="text"
                   placeholder="Search"
                   class="input input-bordered w-24 h-8 md:w-auto"
               />
             </div>
             <div class="input input-bordered w-0 h-8 md:w-auto">
-              <a class="normal-case text-xl">Filtered Count: {{ filteredTodosLength }}</a>
+              <a class="normal-case text-xl">Filtered Count: {{ stateTodo.filteredTodosLength }}</a>
             </div>
           </div>
         </div>
@@ -252,7 +145,7 @@ onBeforeMount(async () => {
             </thead>
             <tbody>
             <tr
-                v-for="todo in filteredTodos"
+                v-for="todo in stateTodo.filteredTodos"
                 :key="todo.id"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
@@ -289,8 +182,8 @@ onBeforeMount(async () => {
                       tabindex="0"
                       class="dropdown-content z-[1] menu shadow bg-base-content rounded-box w-52"
                   >
-                    <li v-for="status in statuses" :key="status.id">
-                      <a @click="handleStatusSelection(todo, status)">{{
+                    <li v-for="status in stateTodo.statuses" :key="status.id">
+                      <a @click="stateTodo.handleStatusSelection(todo, status)">{{
                           status.name
                         }}</a>
                     </li>
@@ -306,7 +199,7 @@ onBeforeMount(async () => {
                 </RouterLink>
 
                 <button
-                    @click="destroy(todo.id)"
+                    @click="stateTodo.destroy(todo.id)"
                     type="button"
                     class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs px-3 py-1.5 text-center mr-1 mb-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                 >
@@ -321,7 +214,7 @@ onBeforeMount(async () => {
         <div>
           <ul class="flex items-center -space-x-px h-8 text-sm">
             <!-- Previous Page Button -->
-            <li @click="previousPage" v-show="showPreviousPageButton">
+            <li @click="stateTodo.previousPage" v-show="stateTodo.showPreviousPageButton">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -339,14 +232,14 @@ onBeforeMount(async () => {
                 </svg>
               </a>
             </li>
-            <li v-for="(pageNum, index) in totalPage" :key="index" @click="updatePageNumber(pageNum)" v-if="stateUser.totalTodos>10">
+            <li v-for="(pageNum, index) in stateTodo.totalPage" :key="index" @click="stateTodo.updatePageNumber(pageNum)" v-if="stateUser.totalTodos>10">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 leading-tight"
                   v-if="pageNum === index+1 ? 'btn-active' : '' "
                   :class="{
-                    'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': pageNumber === pageNum,
-                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': pageNumber !== pageNum
+                    'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': stateTodo.pageNumber === pageNum,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': stateTodo.pageNumber !== pageNum
                   }"
               >
                 {{ pageNum }}
@@ -354,7 +247,7 @@ onBeforeMount(async () => {
             </li>
 
             <!-- Next Page Button -->
-            <li @click="nextPage" v-show="showNextPageButton">
+            <li @click="stateTodo.nextPage" v-show="stateTodo.showNextPageButton">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
