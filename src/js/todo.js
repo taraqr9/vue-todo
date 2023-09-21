@@ -12,7 +12,7 @@ export const useTodoStore = defineStore('todo', to => {
     const stateUser = useUserStore();
     const statuses = reactive([]);
     const priorities = reactive([]);
-    const currentDateTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
+    const currentDateTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
 
     async function getTodoDetails() {
         try {
@@ -28,7 +28,7 @@ export const useTodoStore = defineStore('todo', to => {
         todo.value.created_at = currentDateTime;
         todo.value.updated_at = currentDateTime;
 
-        if(await stateUser.checkUserAndToken() === true){
+        if (await stateUser.checkUserAndToken() === true) {
             await fetch(`${stateUser.dbUrl}/todos`, {
                 method: "POST",
                 headers: {
@@ -46,6 +46,23 @@ export const useTodoStore = defineStore('todo', to => {
             todo.value.status = "";
             todo.value.priority = "";
             todo.value.created_at = "";
+        }
+    }
+
+    async function update() {
+        if (await stateUser.checkUserAndToken() === true) {
+            todo.updated_at = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
+
+            await fetch(`${stateUser.dbUrl}/todos/${todo.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(todo),
+            });
+
+            toast.success("Todo updated successfully!")
+            await getTodoDetails();
         }
     }
 
@@ -81,5 +98,15 @@ export const useTodoStore = defineStore('todo', to => {
         Object.assign(priorities, await res.json());
     }
 
-    return {todo, statuses, priorities, getTodoDetails, create, updateStatusMarkAsComplete, getAllStatus, getAllPriorities}
+    return {
+        todo,
+        statuses,
+        priorities,
+        getTodoDetails,
+        create,
+        update,
+        updateStatusMarkAsComplete,
+        getAllStatus,
+        getAllPriorities
+    }
 });

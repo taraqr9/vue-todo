@@ -7,7 +7,7 @@ const stateUser = useUserStore();
 const stateTodo = useTodoStore();
 
 const todo = ref({
-  user_id: 1,
+  user_id: "",
   name: "",
   status: "",
   priority: "",

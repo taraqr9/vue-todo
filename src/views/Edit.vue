@@ -1,58 +1,21 @@
 <script setup>
-import {reactive, onMounted} from "vue";
-import { useRoute } from "vue-router";
-import {createToaster} from "@meforma/vue-toaster";
+import {onMounted} from "vue";
 import {useUserStore} from "../js/user.js";
+import {useTodoStore} from "../js/todo.js";
 
-const route = useRoute();
-const id = route.params.id;
-const todo = reactive({});
-const statuses = reactive({});
-const priorities = reactive({});
-const toast = createToaster({});
+
 const stateUser = useUserStore();
+const stateTodo = useTodoStore();
 
-async function getTodoDetails() {
-  try {
-    const res = await fetch(`${stateUser.dbUrl}/todos/${id}`);
-    Object.assign(todo, await res.json());
-  } catch (error) {
-    console.error("Error fetching todo:", error);
-  }
-}
-
-async function getAllStatus() {
-  const res = await fetch(`${stateUser.dbUrl}/statuses`);
-  Object.assign(statuses, await res.json());
-}
-
-async function getAllPriorities() {
-  const res = await fetch(`${stateUser.dbUrl}/priorities`);
-  Object.assign(priorities, await res.json());
-}
-
-async function update() {
-  if(await stateUser.checkUserAndToken() === true){
-    todo.updated_at = new Date().toLocaleString("en-US", { timeZone: "Asia/Dhaka" });
-
-    await fetch(`${stateUser.dbUrl}/todos/${todo.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(todo),
-    });
-
-    toast.success("Todo updated successfully!")
-    await getTodoDetails();
-  }
+function update(){
+  stateTodo.update();
 }
 
 onMounted(() => {
   stateUser.stateUpdate()
-  getTodoDetails();
-  getAllStatus();
-  getAllPriorities();
+  stateTodo.getTodoDetails();
+  stateTodo.getAllStatus();
+  stateTodo.getAllPriorities();
 });
 </script>
 
@@ -101,7 +64,7 @@ onMounted(() => {
                 >Name</label
               >
               <input
-                v-model="todo.name"
+                v-model="stateTodo.todo.name"
                 type="text"
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                 placeholder="Enter your todo here"
@@ -115,12 +78,12 @@ onMounted(() => {
                 >Select Status</label
               >
               <select
-                v-model="todo.status"
+                v-model="stateTodo.todo.status"
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                 required
               >
                 <option
-                  v-for="status in statuses"
+                  v-for="status in stateTodo.statuses"
                   :key="status.id"
                   :value="status.name"
                 >
@@ -135,12 +98,12 @@ onMounted(() => {
                 >Select Priority</label
               >
               <select
-                v-model="todo.priority"
+                v-model="stateTodo.todo.priority"
                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                 required
               >
                 <option
-                  v-for="priority in priorities"
+                  v-for="priority in stateTodo.priorities"
                   :key="priority.id"
                   :value="priority.name"
                 >
