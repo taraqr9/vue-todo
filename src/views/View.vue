@@ -1,6 +1,6 @@
 <script setup>
 import { useRoute } from "vue-router";
-import { reactive, onMounted } from "vue";
+import {reactive, onMounted, onBeforeMount} from "vue";
 import { createToaster } from "@meforma/vue-toaster";
 import {useUserStore} from "../js/user.js";
 
@@ -42,9 +42,12 @@ async function updateStatus(){
 }
 
 onMounted(() => {
-  stateUser.stateUpdate()
   getTodoDetails();
 });
+
+onBeforeMount(() => {
+  stateUser.stateUpdate();
+})
 </script>
 
 <template>

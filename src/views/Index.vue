@@ -20,11 +20,7 @@ const showPreviousPageButton = ref(false);
 const pageNumber = ref("1");
 const totalPage = ref("0");
 const itemsPerPage = ref("10");
-const todoLen = ref(0);
-
-const toast = createToaster({
-  /* options */
-});
+const toast = createToaster({});
 
 async function getTodos() {
   const res = await fetch(`${stateUser.dbUrl}/todos?user_id=${stateUser.user.id}&order=desc&_page=${pageNumber.value}&_limit=${itemsPerPage.value}`);
