@@ -20,6 +20,7 @@ const routes = [
     {path: '/profile', component: Profile},
     {path: '/about', component: About},
     {path: '/:pathMatch(.*)*', component: NotFound},
+    {path: '/notfound', component: NotFound},
 ]
 
 const router = createRouter({

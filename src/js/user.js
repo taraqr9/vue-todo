@@ -54,7 +54,7 @@ export const useUserStore = defineStore('user', to => {
                     console.log(error);
                 });
         } else {
-            toast.error("Email already exist, Please try with different email!");
+            toast.error("This email already exists. Please try a different email address to register!");
         }
     }
 
