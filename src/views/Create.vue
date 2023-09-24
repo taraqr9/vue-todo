@@ -15,9 +15,33 @@ const todo = ref({
   updated_at: "",
 });
 
-function create(){
-  stateTodo.create(todo);
+async function create() {
+  todo.value.user_id = stateUser.user.id;
+  todo.value.created_at = stateTodo.currentDateTime;
+  todo.value.updated_at = stateTodo.currentDateTime;
+
+  if (await stateUser.checkUserAndToken() === true) {
+    await fetch(`${stateUser.dbUrl}/todos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(todo.value),
+    }).then(() => {
+      stateUser.totalTodos += 1;
+      localStorage.setItem('totalTodos', JSON.stringify(stateUser.totalTodos));
+    });
+
+    stateTodo.toast.success("Todo created successfully!");
+
+    todo.value.name = "";
+    todo.value.status = "";
+    todo.value.priority = "";
+    todo.value.created_at = "";
+    todo.value.updated_at = "";
+  }
 }
+
 
 onMounted(() => {
   stateTodo.getAllStatus();
@@ -65,7 +89,7 @@ onBeforeMount(() => {
 
       <div class="flex items-center justify-center m-4">
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mx-auto">
-          <form class="p-3" @submit.prevent="create">
+          <form class="p-3" @submit.prevent="create()">
             <div class="mb-6">
               <input
                 v-model="todo.name"

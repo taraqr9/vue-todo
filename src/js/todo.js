@@ -74,32 +74,6 @@ export const useTodoStore = defineStore('todo', to => {
         }
     }
 
-    async function create(todo) {
-        todo.value.user_id = stateUser.user.id;
-        todo.value.created_at = currentDateTime;
-        todo.value.updated_at = currentDateTime;
-
-        if (await stateUser.checkUserAndToken() === true) {
-            await fetch(`${stateUser.dbUrl}/todos`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(todo.value),
-            }).then(() => {
-                stateUser.totalTodos += 1;
-                localStorage.setItem('totalTodos', JSON.stringify(stateUser.totalTodos));
-            });
-
-            toast.success("Todo created successfully!");
-
-            todo.value.name = "";
-            todo.value.status = "";
-            todo.value.priority = "";
-            todo.value.created_at = "";
-        }
-    }
-
     async function destroy(id) {
         if (window.confirm("You want to delete the todo?")) {
             if (await stateUser.checkUserAndToken() === true) {
@@ -177,9 +151,9 @@ export const useTodoStore = defineStore('todo', to => {
         itemsPerPage,
         filterStatus,
         toast,
+        currentDateTime,
         getTodos,
         getTodoDetails,
-        create,
         destroy,
         handleStatusSelection,
         getAllStatus,
