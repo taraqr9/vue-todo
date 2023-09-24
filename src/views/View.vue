@@ -2,10 +2,34 @@
 import {onMounted, onBeforeMount} from "vue";
 import {useUserStore} from "../js/user.js";
 import {useTodoStore} from "../js/todo.js";
+import { useRoute } from 'vue-router';
 
 
 const stateUser = useUserStore();
 const stateTodo = useTodoStore();
+const route = useRoute();
+
+async function updateStatusMarkAsComplete() {
+  try {
+    if (await stateUser.checkUserAndToken() === true) {
+      stateTodo.todo.updated_at = new Date().toLocaleString("en-US", {
+        timeZone: "Asia/Dhaka",
+      });
+      stateTodo.todo.status = 'Completed';
+      await fetch(`${stateUser.dbUrl}/todos/${route.params.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(stateTodo.todo),
+      });
+
+      stateTodo.toast.success("Status updated successfully");
+    }
+  } catch (error) {
+    stateTodo.toast.error("The error is: " + error);
+  }
+}
 
 onMounted(() => {
   stateTodo.getTodoDetails();
@@ -104,7 +128,7 @@ onBeforeMount(() => {
               </div>
 
               <div class="flex-none gap-2">
-                <a @click="stateTodo.updateStatusMarkAsComplete" class="btn btn-success text-white">Mark as complete</a>
+                <a @click="updateStatusMarkAsComplete" class="btn btn-success text-white">Mark as complete</a>
               </div>
             </div>
           </div>

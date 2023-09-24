@@ -157,48 +157,12 @@
     },
     {
       "user_id": 1,
-      "name": "Et sint modi quod bl",
-      "status": "In Progress",
-      "priority": "Low",
-      "created_at": "9/20/2023, 2:46:24 PM",
-      "updated_at": "9/20/2023, 2:49:06 PM",
-      "id": 95
-    },
-    {
-      "user_id": 1,
-      "name": "Aut rerum quidem inv",
-      "status": "In Progress",
-      "priority": "High",
-      "created_at": "9/21/2023, 4:43:41 PM",
-      "updated_at": "9/21/2023, 4:43:41 PM",
-      "id": 104
-    },
-    {
-      "user_id": 1,
-      "name": "Dolores unde praesen one 0 one",
-      "status": "In Progress",
-      "priority": "High",
-      "created_at": "9/21/2023, 4:59:27 PM",
-      "updated_at": "9/24/2023, 10:42:47 AM",
-      "id": 107
-    },
-    {
-      "user_id": 1,
       "name": "Odit totam aut vel q3333333",
       "status": "Completed",
       "priority": "Low",
       "created_at": "9/21/2023, 4:59:27 PM",
       "updated_at": "9/21/2023, 4:59:52 PM",
       "id": 108
-    },
-    {
-      "user_id": 1,
-      "name": "Sint hic ducimus la",
-      "status": "Back Log",
-      "priority": "Low",
-      "created_at": "9/21/2023, 5:09:13 PM",
-      "updated_at": "9/21/2023, 5:09:13 PM",
-      "id": 109
     },
     {
       "user_id": 3,
@@ -212,19 +176,15 @@
     {
       "user_id": 1,
       "name": "In quia exercitation",
-      "status": "Back Log",
+      "status": "Completed",
       "priority": "Medium",
       "created_at": "9/21/2023, 5:39:36 PM",
-      "updated_at": "9/21/2023, 5:39:36 PM",
+      "updated_at": "9/24/2023, 2:17:41 PM",
       "id": 111
     },
     {
-      "user_id": 1,
-      "name": "Delectus at itaque ",
-      "status": "Hold",
-      "priority": "Medium",
-      "created_at": "9/24/2023, 10:41:57 AM",
-      "updated_at": "9/24/2023, 10:41:57 AM",
+      "updated_at": "9/24/2023, 2:03:56 PM",
+      "status": "Completed",
       "id": 112
     },
     {

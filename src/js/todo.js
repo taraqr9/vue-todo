@@ -153,28 +153,6 @@ export const useTodoStore = defineStore('todo', to => {
         }
     }
 
-    async function updateStatusMarkAsComplete() {
-        try {
-            if (await stateUser.checkUserAndToken() === true) {
-                todo.updated_at = new Date().toLocaleString("en-US", {
-                    timeZone: "Asia/Dhaka",
-                });
-                todo.status = 'Completed';
-                await fetch(`${stateUser.dbUrl}/todos/${route.params.id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(todo),
-                });
-
-                toast.success("Status updated successfully");
-            }
-        } catch (error) {
-            toast.error("The error is: " + error);
-        }
-    }
-
     async function getAllStatus() {
         const res = await fetch(`${stateUser.dbUrl}/statuses`);
         Object.assign(statuses, await res.json());
@@ -215,13 +193,13 @@ export const useTodoStore = defineStore('todo', to => {
         totalPage,
         itemsPerPage,
         filterStatus,
+        toast,
         getTodos,
         getTodoDetails,
         create,
         update,
         destroy,
         handleStatusSelection,
-        updateStatusMarkAsComplete,
         getAllStatus,
         getAllPriorities,
         nextPage,
