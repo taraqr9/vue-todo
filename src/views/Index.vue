@@ -13,7 +13,6 @@ const filterStatus = ref([]);
 const sort = ref("");
 
 const filteredTodos = computed(() => {
-  console.log("total todo ",  stateTodo.todos.length);
   return stateTodo.todos
       .filter((todo) => !search.value || todo.name.toLowerCase().includes(search.value.toLowerCase()))
       .filter((todo) => !priority.value || priority.value === "Select priority" || todo.priority === priority.value)
