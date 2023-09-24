@@ -4,7 +4,6 @@ import {useUserStore} from "../js/user.js";
 import {useTodoStore} from "../js/todo.js";
 import { useRoute } from 'vue-router';
 
-
 const stateUser = useUserStore();
 const stateTodo = useTodoStore();
 const route = useRoute();

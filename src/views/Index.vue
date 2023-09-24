@@ -1,10 +1,72 @@
 <script setup>
-import {onMounted, onBeforeMount} from "vue";
+import {onMounted, onBeforeMount, computed, ref} from "vue";
 import {useUserStore} from "../js/user.js";
 import {useTodoStore} from "../js/todo.js";
+import axios from "axios";
 
 const stateUser = useUserStore();
 const stateTodo = useTodoStore();
+
+const search = ref("");
+const priority = ref("");
+const filterStatus = ref([]);
+const sort = ref("");
+
+const filteredTodos = computed(() => {
+  console.log("total todo ",  stateTodo.todos.length);
+  return stateTodo.todos
+      .filter((todo) => !search.value || todo.name.toLowerCase().includes(search.value.toLowerCase()))
+      .filter((todo) => !priority.value || priority.value === "Select priority" || todo.priority === priority.value)
+      .filter((todo) => filterStatus.value.length === 0 || filterStatus.value.includes(todo.status))
+      .sort((a, b) => {
+        if (sort.value === "Sort By") {
+          return 0;
+        }
+        return sort.value === "created-at-asc" ? new Date(a.created_at) - new Date(b.created_at) : new Date(b.created_at) - new Date(a.created_at);
+      });
+});
+
+const filteredTodosLength = computed(() => {
+  return filteredTodos.value.length;
+});
+
+async function updateStatus(todo, status) {
+  try {
+    if (await stateUser.checkUserAndToken() === true) {
+      todo.updated_at = stateTodo.currentDateTime;
+      todo.status = status.name;
+
+      await fetch(`${stateUser.dbUrl}/todos/${todo.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(todo),
+      });
+      stateTodo.toast.success("Status updated successfully");
+    }
+
+  } catch (error) {
+    stateTodo.toast.error("The error is: " + error);
+  }
+}
+
+async function destroy(id) {
+  if (window.confirm("You want to delete the todo?")) {
+    if (await stateUser.checkUserAndToken() === true) {
+      await axios.delete(`${stateUser.dbUrl}/todos/` + id).then(async () => {
+        stateUser.totalTodos -= 1;
+        localStorage.setItem('totalTodos', JSON.stringify(stateUser.totalTodos));
+
+        await stateTodo.getTodos();
+        stateTodo.toast.success('Task Deleted successfully!');
+      }).catch((error) => {
+        stateTodo.toast.error("An unknown error occurred, ", error);
+      });
+
+    }
+  }
+}
 
 onMounted(() => {
   stateTodo.getTodos();
@@ -36,7 +98,7 @@ onBeforeMount(async () => {
               :key="status.id"
           >
             <input
-                v-model="stateTodo.filterStatus"
+                v-model="filterStatus"
                 :id="status.id"
                 type="checkbox"
                 :value="status.name"
@@ -92,7 +154,7 @@ onBeforeMount(async () => {
           <div class="flex-none gap-2">
             <div class="form-control align-right">
               <select
-                  v-model="stateTodo.priority"
+                  v-model="priority"
                   class="input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Select Priority</option>
@@ -104,7 +166,7 @@ onBeforeMount(async () => {
 
             <div class="form-control">
               <select
-                  v-model="stateTodo.sort"
+                  v-model="sort"
                   class="input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Sort By</option>
@@ -115,14 +177,14 @@ onBeforeMount(async () => {
 
             <div class="form-control">
               <input
-                  v-model="stateTodo.search"
+                  v-model="search"
                   type="text"
                   placeholder="Search"
                   class="input input-bordered w-24 h-8 md:w-auto"
               />
             </div>
             <div class="input input-bordered w-0 h-8 md:w-auto">
-              <a class="normal-case text-xl">Filtered Count: {{ stateTodo.filteredTodosLength }}</a>
+              <a class="normal-case text-xl">Filtered Count: {{ filteredTodosLength }}</a>
             </div>
           </div>
         </div>
@@ -145,7 +207,7 @@ onBeforeMount(async () => {
             </thead>
             <tbody>
             <tr
-                v-for="todo in stateTodo.filteredTodos"
+                v-for="todo in filteredTodos"
                 :key="todo.id"
                 class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
             >
@@ -183,7 +245,7 @@ onBeforeMount(async () => {
                       class="dropdown-content z-[1] menu shadow bg-base-content rounded-box w-52"
                   >
                     <li v-for="status in stateTodo.statuses" :key="status.id">
-                      <a @click="stateTodo.handleStatusSelection(todo, status)">{{
+                      <a @click="updateStatus(todo, status)">{{
                           status.name
                         }}</a>
                     </li>
@@ -199,7 +261,7 @@ onBeforeMount(async () => {
                 </RouterLink>
 
                 <button
-                    @click="stateTodo.destroy(todo.id)"
+                    @click="destroy(todo.id)"
                     type="button"
                     class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs px-3 py-1.5 text-center mr-1 mb-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
                 >
@@ -247,7 +309,7 @@ onBeforeMount(async () => {
             </li>
 
             <!-- Next Page Button -->
-            <li @click="stateTodo.nextPage" v-show="stateTodo.showNextPageButton">
+            <li @click="stateTodo.nextPage"  v-if="filteredTodosLength===10">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
