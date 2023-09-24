@@ -4,6 +4,7 @@ import {computed, reactive, ref} from "vue";
 import {createToaster} from "@meforma/vue-toaster";
 import {useUserStore} from "./user.js";
 import axios from "axios";
+import router from '../router/index.js'
 
 export const useTodoStore = defineStore('todo', to => {
 
@@ -59,8 +60,17 @@ export const useTodoStore = defineStore('todo', to => {
         try {
             const res = await fetch(`${stateUser.dbUrl}/todos/${route.params.id}`);
             Object.assign(todo, await res.json());
+
+            if (res.status === 404 || todo.user_id !== stateUser.user.id) {
+                Object.keys(todo).forEach((key) => {
+                    todo[key] = null;
+                });
+                await router.replace('/notfound');
+                toast.error("Something went wrong!");
+            }
         } catch (error) {
-            console.error("Error fetching todo:", error);
+            await router.replace('/notfound');
+            toast.error("Error fetching todo:", error);
         }
     }
 
