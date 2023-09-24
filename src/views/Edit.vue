@@ -7,8 +7,21 @@ import {useTodoStore} from "../js/todo.js";
 const stateUser = useUserStore();
 const stateTodo = useTodoStore();
 
-function update(){
-  stateTodo.update();
+async function update() {
+  if (await stateUser.checkUserAndToken() === true) {
+    stateTodo.todo.updated_at =  new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
+
+    await fetch(`${stateUser.dbUrl}/todos/${stateTodo.todo.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(stateTodo.todo),
+    });
+
+    stateTodo.toast.success("Todo updated successfully!")
+    await stateTodo.getTodoDetails();
+  }
 }
 
 onMounted(() => {

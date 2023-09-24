@@ -100,23 +100,6 @@ export const useTodoStore = defineStore('todo', to => {
         }
     }
 
-    async function update() {
-        if (await stateUser.checkUserAndToken() === true) {
-            todo.updated_at = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
-
-            await fetch(`${stateUser.dbUrl}/todos/${todo.id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(todo),
-            });
-
-            toast.success("Todo updated successfully!")
-            await getTodoDetails();
-        }
-    }
-
     async function destroy(id) {
         if (window.confirm("You want to delete the todo?")) {
             if (await stateUser.checkUserAndToken() === true) {
@@ -197,7 +180,6 @@ export const useTodoStore = defineStore('todo', to => {
         getTodos,
         getTodoDetails,
         create,
-        update,
         destroy,
         handleStatusSelection,
         getAllStatus,
