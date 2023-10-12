@@ -3,6 +3,8 @@ import {ref} from "vue";
 import axios from "axios";
 import {createToaster} from "@meforma/vue-toaster";
 import router from '../router/index.js'
+import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile} from "firebase/auth";
+import {auth} from "../firebase/init.js";
 
 const toast = createToaster({});
 
@@ -10,129 +12,36 @@ export const useUserStore = defineStore('user', to => {
     const dbUrl = "http://localhost:3001";
     const user = ref({});
     const accessToken = ref();
-    const auth = ref(false);
     const totalTodos = ref(0);
 
-    async function signUp(signUp) {
-
-        const signName = signUp.name;
-        const signEmail = signUp.email;
-        const signPassword = signUp.password;
-
-        const emailExist = await axios.get(`${dbUrl}/users?email=${signUp.email}`);
-
-        if (emailExist.data.length === 0) {
-            const currentDateTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Dhaka"});
-
-            await axios.post(`${dbUrl}/users`, {
-                name: signName,
-                email: signEmail,
-                password: signPassword,
-                created_at: currentDateTime,
-                updated_at: currentDateTime
-            })
-                .then(function (response) {
-                    user.value = response.data;
-                    axios.post(`${dbUrl}/tokens`, {
-                        user_id: user.value.id, token: generateRandomString(12), validation_till: addOneMonthToDate()
-                    }).then(function (response) {
-                        delete user.value.password;
-                        accessToken.value = user.value.id + '|' + response.data.token;
-                        auth.value = true;
-                        totalTodos.value = 0;
-
-                        storeLocalData(user.value, accessToken.value, auth.value, totalTodos.value);
-
-                        toast.success("Your account created successfully!");
-                        router.push('/index');
-                    })
-                        .catch(function (error) {
-                            return toast.error(error);
-                        });
+    async function signUp(name, email, password) {
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                updateProfile(auth.currentUser, {
+                    displayName: name
+                }).then(() => {
+                    toast.success("Your account created successfully!");
+                    router.push('/index');
                 })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        } else {
-            toast.error("This email already exists. Please try a different email address to register!");
-        }
+            }).catch((error) => {
+            toast.error(errorMessage(error.message));
+        });
     }
 
     async function login(email, password) {
-        await axios.get(`${dbUrl}/users?email=${email}&password=${password}`)
-            .then((res) => user.value = res.data[0])
-            .catch(() => toast.error("Please check your email and password"));
-
-        if (user.value) {
-            axios.post(`${dbUrl}/tokens`, {
-                user_id: user.value.id, token: generateRandomString(12), validation_till: addOneMonthToDate()
-            })
-                .then(function (response) {
-                    delete user.value.password;
-                    accessToken.value = user.value.id + '|' + response.data.token;
-                    auth.value = true;
-                })
-                .catch(function (error) {
-                    return toast.error(error);
-                });
-
-            await axios.get(`${dbUrl}/todos?user_id=${user.value.id}`)
-                .then(async (res) => {
-                    let findLength = res.data.filter(function (todo) {
-                        return todo.id;
-                    });
-
-                    totalTodos.value = findLength.length;
-                });
-
-            storeLocalData(user.value, accessToken.value, auth.value, totalTodos.value);
-
-            toast.success("Login successfully!");
-            await router.push({path: 'Index'});
-        } else {
-            toast.error("Please check your email and password");
-        }
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                toast.success("Login successfully!");
+                router.push('/index');
+            }).catch((error) => {
+            toast.error(errorMessage(error.message));
+        });
     }
 
     async function logout() {
-        const accessToken = JSON.parse(localStorage.getItem('accessToken'));
-        if (accessToken) {
-            const userIdAndToken = accessToken.split('|');
-            const token = await (await axios.get(`${dbUrl}/tokens?user_id=${userIdAndToken[0]}&token=${userIdAndToken[1]}`)).data[0];
-
-            if (token) {
-                await axios.delete(`${dbUrl}/tokens/${token.id}`);
-                clearLocalData();
-                await router.push({path: '/login'});
-            } else {
-                clearLocalData();
-                await router.push({path: '/login'});
-            }
-        } else {
-            clearLocalData();
-            await router.push({path: '/login'});
-        }
-    }
-
-    const generateRandomString = (length) => {
-        let result = '';
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        const charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result;
-    };
-
-    function addOneMonthToDate() {
-        const newDate = new Date();
-        newDate.setMonth(newDate.getMonth() + 1);
-
-        if (newDate.getMonth() === 0) {
-            newDate.setFullYear(newDate.getFullYear() + 1);
-        }
-
-        return newDate.getTime();
+        signOut(auth).then(() => {
+            router.push('/login')
+        });
     }
 
     async function checkUserAndToken() {
@@ -173,15 +82,6 @@ export const useUserStore = defineStore('user', to => {
         totalTodos.value = JSON.parse(localStorage.getItem('totalTodos'));
     }
 
-    function storeLocalData(user, accessToken, auth, totalTodos) {
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('accessToken', JSON.stringify(accessToken));
-        localStorage.setItem('auth', JSON.stringify(auth));
-        localStorage.setItem('totalTodos', JSON.stringify(totalTodos));
-
-        return true;
-    }
-
     function clearLocalData() {
         localStorage.setItem('user', JSON.stringify(''));
         localStorage.setItem('accessToken', JSON.stringify(''));
@@ -189,6 +89,20 @@ export const useUserStore = defineStore('user', to => {
         localStorage.setItem('totalTodos', JSON.stringify(''));
 
         return true;
+    }
+
+    function errorMessage(message) {
+        if (message.match("invalid-login-credentials")) {
+            return "Invalid login credentials!";
+        } else if (message.match("auth/invalid-email")) {
+            return "Invalid email!";
+        } else if (message.match("auth/weak-password")) {
+            return "Password should be at least 6 characters!";
+        } else if (message.match("auth/email-already-in-use")) {
+            return "This email already exists!";
+        } else {
+            return "Something went wrong!";
+        }
     }
 
     return {user, accessToken, auth, totalTodos, dbUrl, login, signUp, logout, stateUpdate, checkUserAndToken}

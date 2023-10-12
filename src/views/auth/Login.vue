@@ -64,7 +64,7 @@ async function login(){
                       </div>
 <!--                      <a href="#" class="text-sm font-medium text-primary-600 hover:underline">Forgot password?</a>-->
                   </div>
-                  <button type="submit" class="w-full btn btn-success">Sign in</button>
+                  <button type="submit" class="flex mx-auto btn btn-success hover:text-white transition duration-700">Sign in</button>
                   <p class="text-sm font-light text-gray-500">
                     Don’t have an account yet? <RouterLink to="/signup" class="font-medium text-primary-600 hover:underline">Sign Up</RouterLink>
                   </p>

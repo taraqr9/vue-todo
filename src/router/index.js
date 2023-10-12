@@ -8,6 +8,7 @@ import Login from "../views/auth/Login.vue";
 import SignUp from "../views/auth/SignUp.vue";
 import Profile from "../views/auth/Profile.vue";
 import NotFound from "../views/auth/NotFound.vue";
+import {getAuth, onAuthStateChanged} from 'firebase/auth';
 
 const routes = [
     {path: '/index', component: Index},
@@ -26,16 +27,26 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes
-})
+});
 
-router.beforeEach((to, from, next) => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const auth = JSON.parse(localStorage.getItem('auth'));
+const getCurrentUser = async () => {
+    return await new Promise((resolve, reject) => {
+        const removeListener = onAuthStateChanged(
+            getAuth(),
+            (user) => {
+                removeListener();
+                resolve(user);
+            },
+            reject
+        )
+    })
+}
+router.beforeEach(async (to, from, next) => {
 
-    if (!user && to.path !== '/signup' && to.path !== '/login') {
-        next({ path: '/login' });
-    } else if (auth === true && (to.path === '/login' || to.path === '/signup')) {
-        next({ path: '/index' });
+    if (!await getCurrentUser() && to.path !== '/signup' && to.path !== '/login') {
+        next({path: '/login'});
+    } else if (await getCurrentUser() && (to.path === '/login' || to.path === '/signup')) {
+        next({path: '/index'});
     } else {
         next();
     }

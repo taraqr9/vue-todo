@@ -1,22 +1,21 @@
 <script setup>
-import {ref, reactive} from "vue";
+import {ref} from "vue";
 import {useUserStore} from "../../js/user.js";
 
 const stateUser = useUserStore();
-const user = reactive({});
 const signInfo = ref({
   name: "",
   email: "",
   password: ""
 });
 
-
-async function signUp() {
-  await stateUser.signUp(signInfo.value).then(() =>
-          signInfo.value.name = "",
-          signInfo.value.email = "",
-          signInfo.value.password = ""
-  );
+function signUp() {
+  stateUser.signUp(signInfo.value.name, signInfo.value.email, signInfo.value.password)
+      .then(() =>
+              signInfo.value.name = "",
+              signInfo.value.email = "",
+              signInfo.value.password = ""
+      );
 }
 </script>
 
@@ -67,7 +66,7 @@ async function signUp() {
                   required
               />
             </div>
-            <button type="submit" class="w-full btn btn-success">Sign Up</button>
+            <button type="submit" class="flex mx-auto btn btn-success hover:text-white transition duration-700">Sign Up</button>
             <p class="text-sm font-light text-gray-500">
               Already have an account?
               <RouterLink to="/login" class="font-medium text-primary-600 hover:underline">Sign

@@ -3,6 +3,9 @@ import {onMounted, onBeforeMount, computed, ref} from "vue";
 import {useUserStore} from "../js/user.js";
 import {useTodoStore} from "../js/todo.js";
 import axios from "axios";
+import {signOut} from "firebase/auth";
+import {auth} from '../firebase/init.js';
+import router from "../router/index.js";
 
 const stateUser = useUserStore();
 const stateTodo = useTodoStore();
@@ -72,10 +75,6 @@ onMounted(() => {
   stateTodo.getAllStatus();
   stateTodo.getAllPriorities();
 });
-
-onBeforeMount(async () => {
-  stateUser.stateUpdate();
-})
 </script>
 
 
@@ -118,11 +117,13 @@ onBeforeMount(async () => {
         <div class="navbar bg-gray-300 rounded">
           <div class="flex-1 gap-2">
             <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-white text-black">Home</RouterLink>
-            <RouterLink to="/todo/create" class="btn btn-success text-white bg-white text-black">Create</RouterLink>
+            <RouterLink to="/todo/create" class="btn btn-success bg-white text-black">Create</RouterLink>
           </div>
 
           <div class="flex-1 border-accent/25 rounded">
-            <a class="normal-case text-xl bg-gray-600 p-2 rounded-md text-white">Total Todo: {{ stateUser.totalTodos }}</a>
+            <a class="normal-case text-xl bg-gray-600 p-2 rounded-md text-white">Total Todo: {{
+                stateUser.totalTodos
+              }}</a>
           </div>
 
           <div class="dropdown dropdown-end">
@@ -131,10 +132,11 @@ onBeforeMount(async () => {
                 <img src="../assets/avatar.png"/>
               </div>
             </label>
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-gray-300 rounded-box w-52 bg-white text-black">
+            <ul tabindex="0"
+                class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 bg-white text-black">
               <li class="justify-between">
                 <a>
-                  <li>{{ stateUser.user.name }}</li>
+                  <li>{{ auth.currentUser.displayName }}</li>
                   <span class="badge badge-info gap-2">{{ stateUser.totalTodos }}</span>
                 </a>
                 <hr>
@@ -293,7 +295,8 @@ onBeforeMount(async () => {
                 </svg>
               </a>
             </li>
-            <li v-for="(pageNum, index) in stateTodo.totalPage" :key="index" @click="stateTodo.updatePageNumber(pageNum)" v-if="stateUser.totalTodos>10">
+            <li v-for="(pageNum, index) in stateTodo.totalPage" :key="index"
+                @click="stateTodo.updatePageNumber(pageNum)" v-if="stateUser.totalTodos>10">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 leading-tight"
@@ -308,7 +311,7 @@ onBeforeMount(async () => {
             </li>
 
             <!-- Next Page Button -->
-            <li @click="stateTodo.nextPage"  v-if="stateUser.totalTodos>10 && filteredTodosLength===10">
+            <li @click="stateTodo.nextPage" v-if="stateUser.totalTodos>10 && filteredTodosLength===10">
               <a
                   href="#"
                   class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 "
