@@ -59,9 +59,9 @@ onBeforeMount(() => {
     <div class="md:col-span-2 bg-teal-50 px-3"></div>
 
     <main class="px-16 py-6 md:col-span-10 bg-gray-100 h-full">
-      <div class="navbar bg-base-100 rounded">
+      <div class="navbar bg-gray-300 rounded">
         <div class="flex-1 gap-2">
-          <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200 ">Home</RouterLink>
+          <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-white text-black ">Home</RouterLink>
         </div>
 
         <div class="dropdown dropdown-end">
@@ -70,7 +70,7 @@ onBeforeMount(() => {
               <img src="../assets/avatar.png"/>
             </div>
           </label>
-          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+          <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52  bg-white text-black">
             <li class="justify-between">
               <a>
                 <li>{{ stateUser.user.name }}</li>
@@ -94,7 +94,7 @@ onBeforeMount(() => {
               <input
                 v-model="todo.name"
                 type="text"
-                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5"
                 placeholder="Enter your todo name here"
                 required
               />
@@ -102,7 +102,7 @@ onBeforeMount(() => {
             <div class="mb-6">
               <select
                 v-model="todo.status"
-                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5"
                 required
               >
                 <option value="" disabled selected>Select Status</option>
@@ -118,7 +118,7 @@ onBeforeMount(() => {
             <div class="mb-6">
               <select
                 v-model="todo.priority"
-                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-96 p-2.5"
                 required
               >
                 <option value="" disabled selected>Select Priority</option>

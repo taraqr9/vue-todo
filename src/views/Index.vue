@@ -101,12 +101,12 @@ onBeforeMount(async () => {
                 :id="status.id"
                 type="checkbox"
                 :value="status.name"
-                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
             />
 
             <label
                 :for="status.id"
-                class="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                class="ml-2 text-sm font-medium text-gray-900"
             >{{ status.name }}</label
             >
           </div>
@@ -115,14 +115,14 @@ onBeforeMount(async () => {
 
       <main class="px-16 py-6 md:col-span-10 bg-gray-100 h-full">
 
-        <div class="navbar bg-base-100 rounded">
+        <div class="navbar bg-gray-300 rounded">
           <div class="flex-1 gap-2">
-            <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-gray-200 ">Home</RouterLink>
-            <RouterLink to="/todo/create" class="btn btn-success text-white">Create</RouterLink>
+            <RouterLink to="/" class="btn btn-ghost normal-case text-xl bg-white text-black">Home</RouterLink>
+            <RouterLink to="/todo/create" class="btn btn-success text-white bg-white text-black">Create</RouterLink>
           </div>
 
           <div class="flex-1 border-accent/25 rounded">
-            <a class="btn btn-outline btn-info normal-case text-xl">Total Todo: {{ stateUser.totalTodos }}</a>
+            <a class="normal-case text-xl bg-gray-600 p-2 rounded-md text-white">Total Todo: {{ stateUser.totalTodos }}</a>
           </div>
 
           <div class="dropdown dropdown-end">
@@ -131,7 +131,7 @@ onBeforeMount(async () => {
                 <img src="../assets/avatar.png"/>
               </div>
             </label>
-            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-gray-300 rounded-box w-52 bg-white text-black">
               <li class="justify-between">
                 <a>
                   <li>{{ stateUser.user.name }}</li>
@@ -148,13 +148,13 @@ onBeforeMount(async () => {
           </div>
         </div>
 
-        <div class="navbar bg-base-100 h-10 rounded justify-end">
+        <div class="navbar bg-gray-300 h-10 rounded justify-end">
 
           <div class="flex-none gap-2">
             <div class="form-control align-right">
               <select
                   v-model="priority"
-                  class="input input-bordered w-24 h-8 md:w-auto"
+                  class="bg-white input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Select Priority</option>
                 <option v-for="priority in stateTodo.priorities" :key="priority.id">
@@ -166,7 +166,7 @@ onBeforeMount(async () => {
             <div class="form-control">
               <select
                   v-model="sort"
-                  class="input input-bordered w-24 h-8 md:w-auto"
+                  class="bg-white input input-bordered w-24 h-8 md:w-auto"
               >
                 <option value="" selected>Sort By</option>
                 <option value="created-at-asc">Created At (ASC)</option>
@@ -179,10 +179,10 @@ onBeforeMount(async () => {
                   v-model="search"
                   type="text"
                   placeholder="Search"
-                  class="input input-bordered w-24 h-8 md:w-auto"
+                  class="bg-white input input-bordered w-24 h-8 md:w-auto"
               />
             </div>
-            <div class="input input-bordered w-0 h-8 md:w-auto">
+            <div class="bg-white input input-bordered w-0 h-8 md:w-auto">
               <a class="normal-case text-xl">Filtered Count: {{ filteredTodosLength }}</a>
             </div>
           </div>
@@ -191,10 +191,10 @@ onBeforeMount(async () => {
         <hr>
         <div class="shadow-md sm:rounded-lg">
           <table
-              class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+              class="w-full text-sm text-left text-gray-500"
           >
             <thead
-                class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+                class="text-xs text-gray-700 uppercase bg-gray-50"
             >
             <tr>
               <th scope="col" class="px-6 py-3">ID</th>
@@ -208,20 +208,20 @@ onBeforeMount(async () => {
             <tr
                 v-for="todo in filteredTodos"
                 :key="todo.id"
-                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                class="bg-white border-b hover:bg-gray-50"
             >
               <td class="px-6 py-4">
                 {{ todo.id }}
               </td>
               <th
                   scope="row"
-                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white max-w-md truncate"
+                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-md truncate"
               >
                 {{ todo.name }}
               </th>
               <td class="px-6 py-4">
                   <span
-                      class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+                      class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded"
                   >{{ todo.status }}</span
                   >
               </td>
@@ -230,13 +230,13 @@ onBeforeMount(async () => {
                 <RouterLink
                     :to="'/todo/' + todo.id"
                     type="button"
-                    class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-900"
+                    class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1"
                 >
                   View
                 </RouterLink>
 
                 <div
-                    class="dropdown text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
+                    class="dropdown text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1"
                 >
                   <label class="cursor-pointer" tabindex="0">Status</label>
                   <ul
@@ -254,7 +254,7 @@ onBeforeMount(async () => {
                 <RouterLink
                     :to="'/todo/' + todo.id + '/edit'"
                     type="button"
-                    class="text-white bg-yellow-500 hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1 dark:bg-yellow-600 dark:hover:bg-yellow-500 dark:focus:ring-yellow-900"
+                    class="text-white bg-yellow-500 hover:bg-yellow-800 focus:outline-none focus:ring-4 focus:ring-yellow-300 font-medium rounded-full text-xs px-3 py-1.5 mr-1 mb-1"
                 >
                   Edit
                 </RouterLink>
@@ -262,7 +262,7 @@ onBeforeMount(async () => {
                 <button
                     @click="destroy(todo.id)"
                     type="button"
-                    class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs px-3 py-1.5 text-center mr-1 mb-1 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+                    class="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-xs px-3 py-1.5 text-center mr-1 mb-1"
                 >
                   Delete
                 </button>
@@ -278,7 +278,7 @@ onBeforeMount(async () => {
             <li @click="stateTodo.previousPage" v-show="stateTodo.showPreviousPageButton">
               <a
                   href="#"
-                  class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700"
               >
                 <span class="sr-only">Previous</span>
                 <svg
@@ -299,8 +299,8 @@ onBeforeMount(async () => {
                   class="flex items-center justify-center px-3 h-8 leading-tight"
                   v-if="pageNum === index+1 ? 'btn-active' : '' "
                   :class="{
-                    'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white': stateTodo.pageNumber === pageNum,
-                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white': stateTodo.pageNumber !== pageNum
+                    'text-blue-600 border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700': stateTodo.pageNumber === pageNum,
+                    'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700': stateTodo.pageNumber !== pageNum
                   }"
               >
                 {{ pageNum }}
@@ -311,7 +311,7 @@ onBeforeMount(async () => {
             <li @click="stateTodo.nextPage"  v-if="stateUser.totalTodos>10 && filteredTodosLength===10">
               <a
                   href="#"
-                  class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 "
               >
                 <span class="sr-only">Next</span>
                 <svg
