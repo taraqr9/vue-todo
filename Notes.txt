@@ -1,5 +1,1 @@
-1. Not auto refreshing after create and deleting a todo.
-2. Send dynamic data for update Todo
-
-// NOTE: Components
-1. Steps - https://daisyui.com/components/
+1. Index page loading screen and work with previous, next and pagination number

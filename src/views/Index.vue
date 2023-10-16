@@ -6,6 +6,7 @@ import axios from "axios";
 import {signOut} from "firebase/auth";
 import {auth} from '../firebase/init.js';
 import router from "../router/index.js";
+import LoadingAnimation from "./LoadingAnimation.vue";
 
 const stateUser = useUserStore();
 const stateTodo = useTodoStore();
@@ -14,6 +15,7 @@ const search = ref("");
 const priority = ref("");
 const filterStatus = ref([]);
 const sort = ref("");
+const id = ref(1);
 
 const filteredTodos = computed(() => {
   return stateTodo.todos
@@ -81,6 +83,13 @@ onMounted(() => {
 <template>
   <title>Todo</title>
   <div class="md:col-span-2 px-3 bg-gray-100 h-screen">
+    <div
+        class="absolute inset-0 z-50"
+        v-if="stateTodo.loading"
+    >
+      <LoadingAnimation/>
+    </div>
+
     <div class="grid md:grid-cols-12 rounded h-full">
       <div
           class="md:col-span-2 bg-teal-50 flex justify-center items-center"
@@ -122,7 +131,7 @@ onMounted(() => {
 
           <div class="flex-1 border-accent/25 rounded">
             <a class="normal-case text-xl bg-gray-600 p-2 rounded-md text-white">Total Todo: {{
-                stateUser.totalTodos
+                stateTodo.todos.length
               }}</a>
           </div>
 
@@ -135,8 +144,7 @@ onMounted(() => {
             <ul tabindex="0"
                 class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 bg-white text-black">
               <li class="justify-between">
-                <a>
-                  <li>{{ auth.currentUser.displayName }}</li>
+                <a>{{ auth.currentUser.displayName }}
                   <span class="badge badge-info gap-2">{{ stateUser.totalTodos }}</span>
                 </a>
                 <hr>
@@ -208,26 +216,26 @@ onMounted(() => {
             </thead>
             <tbody>
             <tr
-                v-for="todo in filteredTodos"
+                v-for="(todo, index) in filteredTodos"
                 :key="todo.id"
                 class="bg-white border-b hover:bg-gray-50"
             >
               <td class="px-6 py-4">
-                {{ todo.id }}
+                {{ id+index }}
               </td>
               <th
                   scope="row"
                   class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap max-w-md truncate"
               >
-                {{ todo.name }}
+                {{ todo.data().name }}
               </th>
               <td class="px-6 py-4">
                   <span
                       class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded"
-                  >{{ todo.status }}</span
+                  >{{ todo.data().status }}</span
                   >
               </td>
-              <td class="px-6 py-4">{{ todo.created_at }}</td>
+              <td class="px-6 py-4">{{ todo.data().created_at }}</td>
               <td class="px-6 py-4">
                 <RouterLink
                     :to="'/todo/' + todo.id"
