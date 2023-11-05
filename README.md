@@ -8,6 +8,9 @@ The Todo App is a web application that simplifies your daily task management. Yo
 ### User Authentication with `localStorage`
 User authentication in this app is implemented manually using `localStorage`. When a user signs up or logs in, their authentication status and user details are securely stored in the browser's `localStorage`. This approach allows for a seamless user experience without the need for external authentication services.
 
+### State Management with Pinia
+For efficient state management, this project utilizes Pinia, a modern and highly customizable store for Vue 3. Pinia helps manage application data and user-related information, providing a smooth and responsive user experience.
+
 ## Features
 - User authentication with sign-up and login.
 - Create, edit, update, and delete tasks.
@@ -17,6 +20,7 @@ User authentication in this app is implemented manually using `localStorage`. Wh
 
 ## Technologies Used
 - Vue.js: The frontend framework for building the app.
+- Pinia: A state management system for Vue 3, ensuring efficient data handling.
 - JSON Server: A simple JSON-based database server for API development.
 - HTML, CSS: For structuring and styling the app.
 
